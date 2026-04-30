@@ -20,7 +20,8 @@ export default function ResetPasswordPage() {
       await resetPassword(email);
       setEmailSent(true);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to send reset email";
+      const message =
+        err instanceof Error ? err.message : "Failed to send reset email";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -66,7 +67,8 @@ export default function ResetPasswordPage() {
         className="w-full max-w-sm bg-white dark:bg-zinc-900 p-8 rounded-lg shadow"
       >
         <p className="text-gray-600 dark:text-gray-400 mb-6">
-          Enter your email address and we'll send you a link to reset your password.
+          Enter your email address and we'll send you a link to reset your
+          password.
         </p>
         <div className="mb-6">
           <label

@@ -17,7 +17,7 @@ export async function updateSession(request: NextRequest) {
         return request.cookies.getAll();
       },
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) =>
+        cookiesToSet.forEach(({ name, value }) =>
           request.cookies.set(name, value),
         );
         supabaseResponse = NextResponse.next({
@@ -33,10 +33,13 @@ export async function updateSession(request: NextRequest) {
   // Refresh session if expired
   const {
     data: { user },
-    error,
   } = await supabase.auth.getUser();
 
-  if (!user && !request.nextUrl.pathname.startsWith("/auth") && request.nextUrl.pathname !== "/") {
+  if (
+    !user &&
+    !request.nextUrl.pathname.startsWith("/auth") &&
+    request.nextUrl.pathname !== "/"
+  ) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 

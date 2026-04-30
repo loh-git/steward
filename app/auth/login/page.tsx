@@ -12,14 +12,9 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    // Probably not needed because of required attribute on inputs, but just in case
-    // if (!email || !password) {
-    //   toast.error("Email and password are required");
-    //   return;
-    // }
 
     try {
       await signIn(email, password);
@@ -83,13 +78,16 @@ export default function Login() {
           {loading ? "Signing in..." : "Sign In"}
         </button>
         <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/auth/register" className="text-blue-600 hover:underline">
             Sign up
           </Link>
         </p>
         <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-          <Link href="/auth/reset-password" className="text-blue-600 hover:underline">
+          <Link
+            href="/auth/reset-password"
+            className="text-blue-600 hover:underline"
+          >
             Forgotten Password?
           </Link>
         </p>

@@ -16,7 +16,7 @@ export default function UpdatePasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!isValid) {
       toast.error("Passwords must match and be at least 6 characters");
       return;
@@ -33,7 +33,8 @@ export default function UpdatePasswordPage() {
       toast.success("Password updated successfully");
       router.push("/auth/login");
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to update password";
+      const message =
+        err instanceof Error ? err.message : "Failed to update password";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -86,7 +87,9 @@ export default function UpdatePasswordPage() {
             placeholder="••••••••"
           />
           {!passwordMatch && confirmPassword && (
-            <p className="text-red-500 text-xs mt-1">Passwords don't match</p>
+            <p className="text-red-500 text-xs mt-1">
+              {"Passwords don't match"}
+            </p>
           )}
         </div>
         <button
