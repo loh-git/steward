@@ -87,7 +87,9 @@ export default function Register() {
             }}
           />
           {highlightMismatch && (
-            <p className="text-red-500 text-xs mt-1">Passwords don&apos;t match</p>
+            <p className="text-red-500 text-xs mt-1">
+              Passwords don&apos;t match
+            </p>
           )}
         </div>
         <div className="mb-6">
@@ -109,7 +111,9 @@ export default function Register() {
             }}
           />
           {highlightMismatch && (
-            <p className="text-red-500 text-xs mt-1">Passwords don&apos;t match</p>
+            <p className="text-red-500 text-xs mt-1">
+              Passwords don&apos;t match
+            </p>
           )}
         </div>
         <div className="flex items-center justify-between">
