@@ -1,18 +1,14 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import type { SavingsGoal } from "@/types/recurringBudget";
-import SavingsClient from "./savings-client";
+import type { RecurringExpense } from "@/types/recurringBudget";
+import ExpensesClient from "./expenses-client";
 
-function mapRow(row: Record<string, unknown>): SavingsGoal {
+function mapRow(row: Record<string, unknown>): RecurringExpense {
   return {
     id: String(row.id),
     label: String(row.label),
-    amount: row.amount != null ? Number(row.amount) : null,
-    usesVariableAmount: Boolean(row.uses_variable_amount),
-    currentBalance: Number(row.current_balance ?? 0),
-    earnsInterest: Boolean(row.earns_interest),
-    interestRate: Number(row.interest_rate ?? 0),
+    amount: Number(row.amount),
     startsFromYear:
       row.starts_from_year != null ? Number(row.starts_from_year) : null,
     startsFromMonth:
@@ -25,7 +21,7 @@ function mapRow(row: Record<string, unknown>): SavingsGoal {
   };
 }
 
-export default async function SavingsPage() {
+export default async function ExpensesPage() {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   const {
@@ -34,10 +30,10 @@ export default async function SavingsPage() {
   if (!user) redirect("/auth/login");
 
   const { data } = await supabase
-    .from("savings_goals")
+    .from("recurring_expenses")
     .select("*")
     .eq("user_id", user.id)
     .order("created_at", { ascending: true });
 
-  return <SavingsClient initialItems={(data ?? []).map(mapRow)} />;
+  return <ExpensesClient initialItems={(data ?? []).map(mapRow)} />;
 }

@@ -1,3 +1,13 @@
+/**
+ * Supabase middleware for Next.js. This middleware is responsible for handling Supabase
+ * authentication and session management.
+ *
+ * It intercepts incoming requests, checks for an existing Supabase session, and refreshes the
+ * session if necessary.
+ *
+ *  If the user is not authenticated and tries to access a protected route, they will be redirected to the login page.
+ */
+
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 

@@ -35,6 +35,9 @@ export type PensionContribution = {
 
 export type FinancialInfo = {
   annualIncome: number;
+  payDate: {
+    dayOfMonth: number | null;
+  };
   taxYear: TaxYear;
   residentInScotland: boolean;
   taxCode: string;
@@ -98,6 +101,9 @@ export function createInitialPayload(id: string): FinancialProfilePayload {
     },
     financialInfo: {
       annualIncome: 0,
+      payDate: {
+        dayOfMonth: null,
+      },
       taxYear: "2026/27",
       residentInScotland: false,
       taxCode: "",

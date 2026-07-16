@@ -2,60 +2,117 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { loadFinancialProfile } from "@/lib/supabase/financial-profile";
+import { formatLastUpdated } from "@/lib/monthly/merge-recurring";
 import { createClient } from "@/utils/supabase/server";
-import { calculateTakeHome } from "@/lib/take-home/calculate";
-import TakeHomeCard from "./components/take-home-card";
-import MonthGrid from "./components/month-grid";
+import {
+  calculateTakeHome,
+  getAdjustedPayDateForMonth,
+} from "@/lib/take-home/calculate";
+import type { MonthlyEntry } from "@/types/monthlyPlan";
+import type { RecurringExpense, SavingsGoal } from "@/types/recurringBudget";
+import DashboardClient from "./components/dashboard-client";
+
+const LOAN_LABELS: Record<string, string> = {
+  plan1: "Plan 1",
+  plan2: "Plan 2",
+  plan4Scotland: "Plan 4 (Scotland)",
+  plan5: "Plan 5",
+  postgraduate: "Postgraduate",
+};
+
+function formatStudentLoans(plans: Record<string, boolean>): string {
+  const active = Object.entries(plans)
+    .filter(([, on]) => on)
+    .map(([key]) => LOAN_LABELS[key] ?? key);
+  return active.length ? active.join(", ") : "None selected";
+}
+
+function parseAllMonthlyRows(
+  rows: Array<{
+    year: number;
+    month: number;
+    take_home_salary?: number | null;
+    incomes?: unknown;
+    expenditures?: unknown;
+    savings?: unknown;
+  }>,
+): MonthlyEntry[] {
+  return rows.map((row) => ({
+    year: row.year,
+    month: row.month,
+    takeHomeSalary:
+      row.take_home_salary != null ? Number(row.take_home_salary) : null,
+    incomes: Array.isArray(row.incomes) ? row.incomes : [],
+    expenditures: Array.isArray(row.expenditures) ? row.expenditures : [],
+    savings: Array.isArray(row.savings) ? row.savings : [],
+  }));
+}
+
+function mapRecurring(row: Record<string, unknown>): RecurringExpense {
+  return {
+    id: String(row.id),
+    label: String(row.label),
+    amount: Number(row.amount),
+    startsFromYear:
+      row.starts_from_year != null ? Number(row.starts_from_year) : null,
+    startsFromMonth:
+      row.starts_from_month != null ? Number(row.starts_from_month) : null,
+    endsUntilYear:
+      row.ends_until_year != null ? Number(row.ends_until_year) : null,
+    endsUntilMonth:
+      row.ends_until_month != null ? Number(row.ends_until_month) : null,
+    createdAt: String(row.created_at),
+  };
+}
+
+function mapSavingsGoal(row: Record<string, unknown>): SavingsGoal {
+  return {
+    id: String(row.id),
+    label: String(row.label),
+    amount: row.amount != null ? Number(row.amount) : null,
+    usesVariableAmount: Boolean(row.uses_variable_amount),
+    currentBalance: Number(row.current_balance ?? 0),
+    earnsInterest: Boolean(row.earns_interest),
+    interestRate: Number(row.interest_rate ?? 0),
+    startsFromYear:
+      row.starts_from_year != null ? Number(row.starts_from_year) : null,
+    startsFromMonth:
+      row.starts_from_month != null ? Number(row.starts_from_month) : null,
+    endsUntilYear:
+      row.ends_until_year != null ? Number(row.ends_until_year) : null,
+    endsUntilMonth:
+      row.ends_until_month != null ? Number(row.ends_until_month) : null,
+    createdAt: String(row.created_at),
+  };
+}
 
 export default async function Dashboard() {
-  const input = await loadFinancialProfile();
-
-  // Ensure user is authenticated for dashboard data
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
   if (!user) {
     redirect("/auth/login");
   }
 
-  // Fetch monthly entries for the current year to drive MonthGrid
-  const currentYear = new Date().getFullYear();
-  const { data: monthsRows } = await supabase
-    .from("monthly_entries")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("year", currentYear);
+  const input = await loadFinancialProfile();
 
-  const monthsData = Array.from({ length: 12 }, (_, i) => {
-    const row = (monthsRows || []).find((r: any) => r.month === i + 1);
-    return (
-      row || {
-        month: i + 1,
-        year: currentYear,
-        incomes: [],
-        expenditures: [],
-      }
-    );
-  });
-
-  // Treat an existing financial profile (even with `annualIncome` === 0)
-  // as "set up". Only show setup CTA when no profile at all exists.
   if (!input) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-black p-8">
-        <div className="max-w-2xl mx-auto text-center">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+      <div className="min-h-screen bg-[#eef1f6] p-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <h1 className="mb-4 text-3xl font-bold text-slate-900">
             No Financial Data
           </h1>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
+          <p className="mb-6 text-slate-600">
             Complete the setup form to save your financial profile and see
             take-home estimates.
           </p>
           <a
             href="/setup"
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="rounded-lg bg-violet-600 px-4 py-2 text-white hover:bg-violet-700"
           >
             Go to Setup
           </a>
@@ -64,92 +121,70 @@ export default async function Dashboard() {
     );
   }
 
+  const currentYear = new Date().getFullYear();
+
+  const [
+    { data: monthsRows },
+    { data: financialRow },
+    { data: profileRow },
+    { data: recurringRows },
+    { data: savingsRows },
+  ] = await Promise.all([
+    supabase
+      .from("monthly_entries")
+      .select("year, month, take_home_salary, incomes, expenditures, savings")
+      .eq("user_id", user.id),
+    supabase
+      .from("financial_profiles")
+      .select("updated_at")
+      .eq("user_id", user.id)
+      .maybeSingle(),
+    supabase
+      .from("profiles")
+      .select("updated_at")
+      .eq("id", user.id)
+      .maybeSingle(),
+    supabase.from("recurring_expenses").select("*").eq("user_id", user.id),
+    supabase.from("savings_goals").select("*").eq("user_id", user.id),
+  ]);
+
+  const allMonths = parseAllMonthlyRows(monthsRows ?? []);
   const { financialInfo: fi, userInfo } = input;
   const takeHome = calculateTakeHome(fi);
-  const activeLoanPlans = Object.entries(fi.studentLoanPlan)
-    .filter(([, on]) => on)
-    .map(([plan]) => plan);
+  const baseNetMonthly = Math.round(takeHome.netMonthly);
+  const today = new Date();
+  const payDate = getAdjustedPayDateForMonth(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    fi.payDate?.dayOfMonth ?? null,
+  );
+  const currentMonthPay = {
+    amount: takeHome.netMonthly,
+    payDateLabel: payDate
+      ? payDate.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
+      : "Set your pay date",
+  };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Dashboard
-            </h1>
-            <p className="text-sm text-zinc-500">
-              Welcome back {userInfo.firstName}
-            </p>
-          </div>
-          <div>
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-              Profile: set up
-            </span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-4">Your profile</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-zinc-500">Name:</span>{" "}
-                <span className="font-medium">
-                  {userInfo.firstName} {userInfo.lastName}
-                </span>
-              </div>
-              <div>
-                <span className="text-zinc-500">Gross salary:</span>{" "}
-                <span className="font-medium">
-                  £{fi.annualIncome.toLocaleString()} / year
-                </span>
-              </div>
-              <div>
-                <span className="text-zinc-500">Tax year:</span>{" "}
-                <span className="font-medium">{fi.taxYear}</span>
-              </div>
-              <div>
-                <span className="text-zinc-500">Region:</span>{" "}
-                <span className="font-medium">
-                  {fi.residentInScotland ? "Scotland" : "England, Wales & NI"}
-                </span>
-              </div>
-              <div>
-                <span className="text-zinc-500">Tax code:</span>{" "}
-                <span className="font-medium">{fi.taxCode || "Default"}</span>
-              </div>
-              <div>
-                <span className="text-zinc-500">Pension:</span>{" "}
-                <span className="font-medium">
-                  {fi.pension.value}
-                  {fi.pension.type === "percentage" ? "%" : "£/mo"} (
-                  {fi.pension.scheme})
-                </span>
-              </div>
-              <div className="sm:col-span-2">
-                <span className="text-zinc-500">Student loans:</span>{" "}
-                <span className="font-medium">
-                  {activeLoanPlans.length
-                    ? activeLoanPlans.join(", ")
-                    : "None selected"}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <TakeHomeCard result={takeHome} />
-        </div>
-
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4">Yearly months</h2>
-          <MonthGrid
-            initialYear={new Date().getFullYear()}
-            monthsData={[]}
-            defaultMonthly={Math.round(takeHome.netMonthly)}
-          />
-        </div>
-      </div>
-    </div>
+    <DashboardClient
+      firstName={userInfo.firstName || "there"}
+      lastName={userInfo.lastName}
+      financialInfo={fi}
+      studentLoanLabel={formatStudentLoans(fi.studentLoanPlan)}
+      lastUpdated={formatLastUpdated(
+        profileRow?.updated_at ?? financialRow?.updated_at,
+      )}
+      takeHome={takeHome}
+      initialYear={currentYear}
+      initialMonthsData={allMonths}
+      recurringExpenses={(recurringRows ?? []).map(mapRecurring)}
+      savingsGoals={(savingsRows ?? []).map(mapSavingsGoal)}
+      baseNetMonthly={baseNetMonthly}
+      currentMonthPay={currentMonthPay}
+    />
   );
 }

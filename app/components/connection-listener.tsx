@@ -30,7 +30,9 @@ export default function ConnectionListener() {
       }
     } catch (err) {
       if (onlineRef.current !== false) {
-        toast.error("Connection to backend failed. Check your internet and try again.");
+        toast.error(
+          "Connection to backend failed. Check your internet and try again.",
+        );
       }
       onlineRef.current = false;
     }

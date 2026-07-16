@@ -11,6 +11,8 @@ type InputProps = {
   max?: number;
   step?: number | string;
   hint?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  pattern?: string;
 };
 
 export default function Input({
@@ -26,8 +28,13 @@ export default function Input({
   max,
   step,
   hint,
+  inputMode,
+  pattern,
 }: InputProps) {
   const isCheckbox = type === "checkbox";
+  const isNumberInput = type === "number";
+  const resolvedStep = step ?? (isNumberInput ? "any" : undefined);
+
   if (isCheckbox) {
     return (
       <div className="flex items-start gap-2">
@@ -68,7 +75,9 @@ export default function Input({
         className={`${className} focus:outline-none focus:ring-2 focus:ring-blue-500`}
         min={min}
         max={max}
-        step={step}
+        step={resolvedStep}
+        inputMode={inputMode ?? (isNumberInput ? "decimal" : undefined)}
+        pattern={pattern}
       />
       {hint ? (
         <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">{hint}</p>

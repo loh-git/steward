@@ -19,7 +19,10 @@ export async function saveFinancialProfile(payload: FinancialProfilePayload) {
     const userRes = await supabase.auth.getUser();
     console.debug("saveFinancialProfile: supabase.auth.getUser() ->", userRes);
   } catch (e) {
-    console.debug("saveFinancialProfile: failed to call supabase.auth.getUser()", e);
+    console.debug(
+      "saveFinancialProfile: failed to call supabase.auth.getUser()",
+      e,
+    );
   }
 
   const normalized: FinancialProfilePayload = {
@@ -27,8 +30,10 @@ export async function saveFinancialProfile(payload: FinancialProfilePayload) {
     id: userId,
   };
 
-  console.debug("saveFinancialProfile: normalized payload", { normalized, userId });
-
+  console.debug("saveFinancialProfile: normalized payload", {
+    normalized,
+    userId,
+  });
 
   const profileUpsert = {
     id: userId,
@@ -39,32 +44,36 @@ export async function saveFinancialProfile(payload: FinancialProfilePayload) {
 
   console.debug("saveFinancialProfile: upserting profile", { profileUpsert });
 
-  const { error: profileError } = await supabase.from("profiles").upsert(
-    profileUpsert,
-    { onConflict: "id" },
-  );
+  const { error: profileError } = await supabase
+    .from("profiles")
+    .upsert(profileUpsert, { onConflict: "id" });
 
   if (profileError) {
     console.error("Error upserting profile:", profileError);
     // Strict RLS: surface a clear error to help debugging RLS policies and session context
-    if ((profileError.message || "").toLowerCase().includes("permission denied")) {
+    if (
+      (profileError.message || "").toLowerCase().includes("permission denied")
+    ) {
       throw new Error(
         "Permission denied when saving profile. Ensure Row Level Security policies allow the authenticated user to insert/update and that the server request presents the user's session cookie (auth.uid()).",
       );
     }
 
-    const message = profileError.message || "Failed to save personal information";
+    const message =
+      profileError.message || "Failed to save personal information";
     throw new Error(message);
   }
 
-  const { error: financialError } = await supabase.from("financial_profiles").upsert(
-    {
-      user_id: userId,
-      tax_year: normalized.financialInfo.taxYear,
-      payload: normalized,
-    },
-    { onConflict: "user_id" },
-  );
+  const { error: financialError } = await supabase
+    .from("financial_profiles")
+    .upsert(
+      {
+        user_id: userId,
+        tax_year: normalized.financialInfo.taxYear,
+        payload: normalized,
+      },
+      { onConflict: "user_id" },
+    );
 
   if (financialError) {
     console.error("Error upserting financial profile:", financialError);

@@ -4,15 +4,29 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
-  if (!body) return NextResponse.json({ ok: false, error: "invalid" }, { status: 400 });
+  if (!body)
+    return NextResponse.json({ ok: false, error: "invalid" }, { status: 400 });
 
-  const { id, name, monthly_amount, start_year, start_month, end_year, end_month, current_balance } = body;
+  const {
+    id,
+    name,
+    monthly_amount,
+    start_year,
+    start_month,
+    end_year,
+    end_month,
+    current_balance,
+  } = body;
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
   const userRes = await supabase.auth.getUser();
   const userId = userRes?.data?.user?.id;
-  if (!userId) return NextResponse.json({ ok: false, error: "unauthenticated" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json(
+      { ok: false, error: "unauthenticated" },
+      { status: 401 },
+    );
 
   const payload: any = {
     user_id: userId,
@@ -27,13 +41,28 @@ export async function POST(req: Request) {
 
   if (id) payload.id = id;
 
-  const { error } = await supabase.from("savings_items").upsert(payload, { onConflict: "id" });
+  const { error } = await supabase
+    .from("savings_items")
+    .upsert(payload, { onConflict: "id" });
   if (!error) return NextResponse.json({ ok: true });
 
   console.error("savings_items upsert error:", error);
-  if (error.message && error.message.toLowerCase().includes("permission denied")) {
-    return NextResponse.json({ ok: false, error: "permission denied - check RLS policies and that request is authenticated as the user" }, { status: 403 });
+  if (
+    error.message &&
+    error.message.toLowerCase().includes("permission denied")
+  ) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          "permission denied - check RLS policies and that request is authenticated as the user",
+      },
+      { status: 403 },
+    );
   }
 
-  return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+  return NextResponse.json(
+    { ok: false, error: error.message },
+    { status: 500 },
+  );
 }

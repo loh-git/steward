@@ -59,13 +59,15 @@ export function calculateAge(dob: string): number {
 
 export function parseInputValue(
   target: HTMLInputElement | HTMLSelectElement,
-): string | number | boolean {
+): string | number | boolean | null {
   if (target.type === "checkbox") {
     return (target as HTMLInputElement).checked;
   }
   if (target.type === "number") {
-    const n = target.valueAsNumber;
-    return Number.isNaN(n) ? 0 : n;
+    const rawValue = target.value;
+    if (rawValue === "") return 0;
+    const n = Number.parseFloat(rawValue);
+    return Number.isFinite(n) ? n : 0;
   }
   return target.value;
 }
@@ -73,7 +75,7 @@ export function parseInputValue(
 export function applyFieldUpdate(
   prev: FinancialProfilePayload,
   name: string,
-  value: string | number | boolean,
+  value: string | number | boolean | null,
 ): FinancialProfilePayload {
   let next = setByPath(prev, name, value);
   if (name === "userInfo.dob" && typeof value === "string") {

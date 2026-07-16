@@ -42,3 +42,7 @@ next-env.d.ts
 
 #vscode
 .vscode/*
+
+STRUCTURE.md
+supabase/.temp/
+supabase/README.md

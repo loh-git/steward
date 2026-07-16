@@ -36,6 +36,29 @@ export function frequencyToAnnual(
   }
 }
 
+export function getAdjustedPayDateForMonth(
+  year: number,
+  month: number,
+  dayOfMonth: number | null | undefined,
+): Date | null {
+  if (dayOfMonth == null) return null;
+
+  const safeDay = Math.min(dayOfMonth, new Date(year, month, 0).getDate());
+  const candidate = new Date(year, month - 1, safeDay);
+
+  if (candidate.getMonth() !== month - 1) {
+    return null;
+  }
+
+  if (candidate.getDay() === 0) {
+    candidate.setDate(candidate.getDate() - 2);
+  } else if (candidate.getDay() === 6) {
+    candidate.setDate(candidate.getDate() - 1);
+  }
+
+  return candidate;
+}
+
 function parsePersonalAllowance(taxCode: string, defaultAllowance: number): number {
   const trimmed = taxCode.trim().toUpperCase();
   if (!trimmed) return defaultAllowance;
@@ -243,10 +266,10 @@ export function calculateTakeHome(fi: FinancialInfo): TakeHomeResult {
   const studentLoan = calculateStudentLoans(repaymentIncome, fi, config);
 
   const deductions: TakeHomeDeductions = {
-    incomeTax: round2(incomeTax),
-    nationalInsurance: round2(nationalInsurance),
-    pension: round2(pensionReducesTaxAndNI ? 0 : pensionAnnual),
-    studentLoan: round2(studentLoan),
+    incomeTax: incomeTax,
+    nationalInsurance: nationalInsurance,
+    pension: pensionReducesTaxAndNI ? 0 : pensionAnnual,
+    studentLoan: studentLoan,
   };
 
   const pensionDeductedFromNet = pensionReducesTaxAndNI
@@ -261,21 +284,17 @@ export function calculateTakeHome(fi: FinancialInfo): TakeHomeResult {
   const netAnnual = Math.max(grossAnnual - totalDeductionsAnnual, 0);
 
   return {
-    grossAnnual: round2(grossAnnual),
-    grossMonthly: round2(grossAnnual / 12),
+    grossAnnual: grossAnnual,
+    grossMonthly: grossAnnual / 12,
     deductions: {
       ...deductions,
-      pension: round2(pensionDeductedFromNet),
+      pension: pensionDeductedFromNet,
     },
-    totalDeductionsAnnual: round2(totalDeductionsAnnual),
-    netAnnual: round2(netAnnual),
-    netMonthly: round2(netAnnual / 12),
+    totalDeductionsAnnual: totalDeductionsAnnual,
+    netAnnual: netAnnual,
+    netMonthly: netAnnual / 12,
     hasIncome: true,
   };
-}
-
-function round2(n: number): number {
-  return Math.round(n * 100) / 100;
 }
 
 export function formatGBP(amount: number): string {
@@ -283,6 +302,6 @@ export function formatGBP(amount: number): string {
     style: "currency",
     currency: "GBP",
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 2,
   }).format(amount);
 }

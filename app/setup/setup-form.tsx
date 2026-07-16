@@ -82,13 +82,17 @@ type SetupFormProps = {
 
 export default function SetupForm({ initialData, userId }: SetupFormProps) {
   const formId = useId().replace(/:/g, "");
-  const [formData, setFormData] = useState<FinancialProfilePayload>(() =>
-    initialData ?? createInitialPayload(userId ?? `draft_${formId}`),
+  const [formData, setFormData] = useState<FinancialProfilePayload>(
+    () => initialData ?? createInitialPayload(userId ?? `draft_${formId}`),
   );
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [payDateError, setPayDateError] = useState<string | null>(null);
 
-  const fi = formData.financialInfo;
+  const fi = {
+    ...formData.financialInfo,
+    payDate: formData.financialInfo.payDate ?? { dayOfMonth: null },
+  };
   const takeHome = useMemo(() => calculateTakeHome(fi), [fi]);
 
   const handleChange = (
@@ -99,9 +103,52 @@ export default function SetupForm({ initialData, userId }: SetupFormProps) {
     setFormData((prev) => applyFieldUpdate(prev, name, value));
   };
 
+  const handlePayDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value;
+
+    if (rawValue === "") {
+      setPayDateError(null);
+      setFormData((prev) =>
+        applyFieldUpdate(prev, "financialInfo.payDate.dayOfMonth", null),
+      );
+      return;
+    }
+
+    if (!/^\d+$/.test(rawValue)) {
+      setPayDateError("Enter only the day number, for example 28.");
+      return;
+    }
+
+    const dayOfMonth = Number(rawValue);
+    if (dayOfMonth < 1 || dayOfMonth > 31) {
+      setPayDateError("Enter a day between 1 and 31.");
+      return;
+    }
+
+    setPayDateError(null);
+    setFormData((prev) =>
+      applyFieldUpdate(prev, "financialInfo.payDate.dayOfMonth", dayOfMonth),
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (payDateError) {
+      setSubmitting(false);
+      return;
+    }
+
+    if (
+      fi.payDate.dayOfMonth !== null &&
+      (fi.payDate.dayOfMonth < 1 || fi.payDate.dayOfMonth > 31)
+    ) {
+      setPayDateError("Enter a day between 1 and 31.");
+      setSubmitting(false);
+      return;
+    }
+
     setSubmitting(true);
     try {
       await saveFinancialProfile(formData);
@@ -197,7 +244,7 @@ export default function SetupForm({ initialData, userId }: SetupFormProps) {
                 value={fi.annualIncome || ""}
                 onChange={handleChange}
                 min={0}
-                step={100}
+                step={0.01}
               />
               <Select
                 label="Tax year"
@@ -206,6 +253,25 @@ export default function SetupForm({ initialData, userId }: SetupFormProps) {
                 onChange={handleChange}
                 options={TAX_YEAR_OPTIONS}
               />
+              <Input
+                type="number"
+                label="Pay date"
+                name="financialInfo.payDate.dayOfMonth"
+                value={fi.payDate.dayOfMonth ?? ""}
+                onChange={handlePayDateChange}
+                min={1}
+                max={31}
+                step={1}
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="e.g. 28"
+                hint="Enter just the day number, for example 28. Do not use 28th or 28/01/2026. Weekend dates roll back to the previous weekday."
+              />
+              {payDateError ? (
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {payDateError}
+                </p>
+              ) : null}
               <Input
                 type="text"
                 label="Tax code (optional)"
