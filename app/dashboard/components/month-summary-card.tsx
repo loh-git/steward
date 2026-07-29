@@ -1,4 +1,4 @@
-import { formatGBP, formatSignedGBP } from "@/lib/format/currency";
+import { formatGBP, formatSignedGBP } from "@/utils/format/currency";
 import type { MonthlyEntry } from "@/types/monthlyPlan";
 import { MONTH_NAMES, summariseMonth } from "@/types/monthlyPlan";
 import { IncomeIcon, PiggyBankIcon, ReceiptIcon } from "./icons";

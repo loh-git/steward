@@ -1,14 +1,4 @@
-export type RecurringExpense = {
-  id: string;
-  label: string;
-  amount: number;
-  startsFromYear: number | null;
-  startsFromMonth: number | null;
-  endsUntilYear: number | null;
-  endsUntilMonth: number | null;
-  createdAt: string;
-};
-
+//  An instance of a savings goal retrieved from BE
 export type SavingsGoal = {
   id: string;
   label: string;
@@ -24,15 +14,7 @@ export type SavingsGoal = {
   createdAt: string;
 };
 
-export type RecurringExpenseInput = {
-  label: string;
-  amount: number;
-  startsFromYear?: number | null;
-  startsFromMonth?: number | null;
-  endsUntilYear?: number | null;
-  endsUntilMonth?: number | null;
-};
-
+// Savings goal input for creating a new savings goal
 export type SavingsGoalInput = {
   label: string;
   amount?: number | null;

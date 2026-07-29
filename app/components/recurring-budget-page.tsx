@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { formatGBP } from "@/lib/format/currency";
+import { formatGBP } from "@/utils/format/currency";
 import { MONTH_NAMES } from "@/types/monthlyPlan";
 import { TrashIcon } from "@/app/dashboard/components/icons";
 
@@ -72,6 +72,10 @@ export function RecurringBudgetPage({
   onAdd,
   onUpdate,
   onDelete,
+  // Variable amount / current balance / earns interest are savings-goal concepts
+  // (a goal has a running balance you're saving toward, a recurring expense doesn't).
+  // Defaults to off so a new caller doesn't inherit savings-only fields by accident.
+  showSavingsFields = false,
 }: {
   title: string;
   description: string;
@@ -82,6 +86,7 @@ export function RecurringBudgetPage({
   onAdd: (values: RecurringFormValues) => Promise<void>;
   onUpdate: (id: string, values: RecurringFormValues) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
+  showSavingsFields?: boolean;
 }) {
   const [form, setForm] = useState<RecurringFormValues>(emptyRecurringForm());
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -186,62 +191,66 @@ export function RecurringBudgetPage({
                   disabled={form.usesVariableAmount}
                 />
               </label>
-              <label className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 sm:col-span-2">
-                <input
-                  type="checkbox"
-                  checked={form.usesVariableAmount ?? false}
-                  onChange={(e) => {
-                    const usesVariableAmount = e.target.checked;
-                    setForm({
-                      ...form,
-                      usesVariableAmount,
-                      amount: usesVariableAmount ? "" : form.amount,
-                    });
-                  }}
-                />
-                Amount varies by month and is chosen later
-              </label>
-              <label className="block">
-                <span className="mb-1 block text-sm font-medium text-slate-700">
-                  Already saved (£)
-                </span>
-                <input
-                  type="number"
-                  min={0}
-                  step={0.01}
-                  value={form.currentBalance ?? ""}
-                  onChange={(e) =>
-                    setForm({ ...form, currentBalance: e.target.value })
-                  }
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                />
-              </label>
-              <label className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 sm:col-span-2">
-                <input
-                  type="checkbox"
-                  checked={form.earnsInterest ?? false}
-                  onChange={(e) =>
-                    setForm({ ...form, earnsInterest: e.target.checked })
-                  }
-                />
-                This balance earns interest
-              </label>
-              {form.earnsInterest ? (
-                <label className="block sm:col-span-2">
-                  <span className="mb-1 block text-sm font-medium text-slate-700">
-                    Interest rate (% annual)
-                  </span>
-                  <input
-                    type="number"
-                    min={0}
-                    step={0.01}
-                    value={form.interestRate ?? ""}
-                    onChange={(e) =>
-                      setForm({ ...form, interestRate: e.target.value })
-                    }
-                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                  />
-                </label>
+              {showSavingsFields ? (
+                <>
+                  <label className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 sm:col-span-2">
+                    <input
+                      type="checkbox"
+                      checked={form.usesVariableAmount ?? false}
+                      onChange={(e) => {
+                        const usesVariableAmount = e.target.checked;
+                        setForm({
+                          ...form,
+                          usesVariableAmount,
+                          amount: usesVariableAmount ? "" : form.amount,
+                        });
+                      }}
+                    />
+                    Amount varies by month and is chosen later
+                  </label>
+                  <label className="block">
+                    <span className="mb-1 block text-sm font-medium text-slate-700">
+                      Already saved (£)
+                    </span>
+                    <input
+                      type="number"
+                      min={0}
+                      step={0.01}
+                      value={form.currentBalance ?? ""}
+                      onChange={(e) =>
+                        setForm({ ...form, currentBalance: e.target.value })
+                      }
+                      className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                    />
+                  </label>
+                  <label className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 sm:col-span-2">
+                    <input
+                      type="checkbox"
+                      checked={form.earnsInterest ?? false}
+                      onChange={(e) =>
+                        setForm({ ...form, earnsInterest: e.target.checked })
+                      }
+                    />
+                    This balance earns interest
+                  </label>
+                  {form.earnsInterest ? (
+                    <label className="block sm:col-span-2">
+                      <span className="mb-1 block text-sm font-medium text-slate-700">
+                        Interest rate (% annual)
+                      </span>
+                      <input
+                        type="number"
+                        min={0}
+                        step={0.01}
+                        value={form.interestRate ?? ""}
+                        onChange={(e) =>
+                          setForm({ ...form, interestRate: e.target.value })
+                        }
+                        className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                      />
+                    </label>
+                  ) : null}
+                </>
               ) : null}
             </div>
 

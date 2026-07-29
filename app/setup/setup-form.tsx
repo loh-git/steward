@@ -7,15 +7,14 @@ import { saveFinancialProfile } from "./actions";
 import Input from "@/app/setup/components/input";
 import Select from "@/app/setup/components/select";
 import TakeHomeSummary from "@/app/setup/components/take-home-summary";
-import { calculateTakeHome } from "@/lib/take-home/calculate";
+import { calculateTakeHome } from "@/utils/take-home/calculate";
 import {
-  createInitialPayload,
   type FinancialProfilePayload,
   type PayFrequency,
-  type SacrificeFrequency,
+  type SalarySacrificeFrequency,
   type TaxYear,
-} from "./types";
-import { applyFieldUpdate, parseInputValue } from "./utils";
+} from "@/types/financialProfile";
+import { applyFieldUpdate, createInitialPayload, parseInputValue } from "./utils";
 
 const TAX_YEAR_OPTIONS: { value: TaxYear; label: string }[] = [
   { value: "2024/25", label: "2024 / 25" },
@@ -32,7 +31,7 @@ const PAY_FREQUENCY_OPTIONS: { value: PayFrequency; label: string }[] = [
 ];
 
 const SACRIFICE_FREQUENCY_OPTIONS: {
-  value: SacrificeFrequency;
+  value: SalarySacrificeFrequency;
   label: string;
 }[] = [
   { value: "yearly", label: "Year" },

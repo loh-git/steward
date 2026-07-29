@@ -1,3 +1,5 @@
+/* Overriding CSS rules that apply to the entire application */
+
 @import "tailwindcss";
 
 :root {

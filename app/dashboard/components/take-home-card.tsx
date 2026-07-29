@@ -1,5 +1,5 @@
-import type { TakeHomeResult } from "@/lib/take-home/calculate";
-import { formatGBP } from "@/lib/format/currency";
+import type { TakeHomeResult } from "@/utils/take-home/calculate";
+import { formatGBP } from "@/utils/format/currency";
 import { BriefcaseIcon } from "./icons";
 
 export default function TakeHomeCard({

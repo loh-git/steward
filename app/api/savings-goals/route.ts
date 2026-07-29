@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
-import type { SavingsGoal } from "@/types/recurringBudget";
+import type { SavingsGoal } from "@/types/savingsGoals";
 
 function rowToGoal(row: Record<string, unknown>): SavingsGoal {
   return {
@@ -91,7 +91,11 @@ export async function POST(req: Request) {
 
 export async function PUT(req: Request) {
   const body = await req.json().catch(() => null);
-  if (!body?.id || !body?.label || (body.amount == null && !body.usesVariableAmount)) {
+  if (
+    !body?.id ||
+    !body?.label ||
+    (body.amount == null && !body.usesVariableAmount)
+  ) {
     return NextResponse.json({ error: "invalid" }, { status: 400 });
   }
 

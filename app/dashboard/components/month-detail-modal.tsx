@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import type { MonthlyEntry } from "@/types/monthlyPlan";
 import { MONTH_NAMES } from "@/types/monthlyPlan";
-import type { SavingsGoal } from "@/types/recurringBudget";
+import type { SavingsGoal } from "@/types/savingsGoals";
+import type { RecurringExpense } from "@/types/recurringExpenses";
 import { CloseIcon } from "./icons";
-import MonthlyDetailView from "./monthly-detail-view";
+import MonthlyDetailView from "./MonthlyDetailView";
 
 type MonthDetailModalProps = {
   open: boolean;
@@ -16,6 +17,7 @@ type MonthDetailModalProps = {
   onClose: () => void;
   onSaveMonth: (entry: MonthlyEntry) => Promise<void>;
   savingsGoals: SavingsGoal[];
+  recurringExpenses: RecurringExpense[];
   saveError?: string | null;
 };
 
@@ -28,6 +30,7 @@ export default function MonthDetailModal({
   onClose,
   onSaveMonth,
   savingsGoals,
+  recurringExpenses,
   saveError,
 }: MonthDetailModalProps) {
   const [mounted, setMounted] = useState(false);
@@ -123,6 +126,7 @@ export default function MonthDetailModal({
             onMonthChange={setSelectedMonth}
             onSaveMonth={onSaveMonth}
             savingsGoals={savingsGoals}
+            recurringExpenses={recurringExpenses}
             allowSavingsAdd
           />
         </div>

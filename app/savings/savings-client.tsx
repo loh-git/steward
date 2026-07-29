@@ -8,7 +8,7 @@ import {
   parseRecurringPayload,
   type RecurringFormValues,
 } from "@/app/components/recurring-budget-page";
-import type { SavingsGoal } from "@/types/recurringBudget";
+import type { SavingsGoal } from "@/types/savingsGoals";
 
 export default function SavingsClient({
   initialItems,
@@ -34,6 +34,7 @@ export default function SavingsClient({
       icon={<PiggyBankIcon className="text-violet-600" />}
       accentClass="bg-violet-100"
       buttonClass="bg-violet-600 hover:bg-violet-700"
+      showSavingsFields
       items={items}
       onAdd={async (values: RecurringFormValues) => {
         const res = await fetch("/api/savings-goals", {

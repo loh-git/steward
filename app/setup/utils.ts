@@ -1,4 +1,4 @@
-import type { FinancialProfilePayload } from "./types";
+import type { FinancialProfilePayload } from "@/types/financialProfile";
 
 function getAtPath(obj: object, path: string): unknown {
   return path.split(".").reduce<unknown>((acc, key) => {
@@ -82,4 +82,76 @@ export function applyFieldUpdate(
     next = setByPath(next, "userInfo.age", calculateAge(value));
   }
   return next;
+}
+
+// Create default financial profile payload for a user with the given id. This is used when a user has no existing financial profile data in the database.
+export function createInitialPayload(id: string): FinancialProfilePayload {
+  return {
+    id,
+    userInfo: {
+      firstName: "",
+      lastName: "",
+      dob: "",
+      age: 0,
+    },
+    financialInfo: {
+      annualIncome: 0,
+      payDate: {
+        dayOfMonth: null,
+      },
+      taxYear: "2026/27",
+      residentInScotland: false,
+      taxCode: "",
+      studentLoanPlan: {
+        plan1: false,
+        plan2: false,
+        plan4Scotland: false,
+        plan5: false,
+        postgraduate: false,
+      },
+      pension: {
+        type: "percentage",
+        value: 0,
+        scheme: "auto-enrolment",
+        basedOnQualifyingEarnings: true,
+        includeOvertime: false,
+        includeBonus: false,
+        includeCashAllowances: false,
+      },
+      bonus: {
+        amount: 0,
+        normalPayPeriod: "monthly",
+      },
+      overtime: {
+        hoursPerMonth: 0,
+        rateMultiplier: 1.5,
+        hoursPerMonthSecond: 0,
+        rateMultiplierSecond: 2,
+        normalWorkingWeekHours: 37.5,
+        cashAmountPerMonth: 0,
+      },
+      childcare: {
+        monthlyVoucherValue: 0,
+        joinedBeforeApril2011: false,
+      },
+      salarySacrifice: {
+        niOnlyAmount: 0,
+        niOnlyFrequency: "monthly",
+        taxExemptAmount: 0,
+        taxExemptFrequency: "monthly",
+      },
+      taxableBenefits: {
+        benefitsAmount: 0,
+        benefitsFrequency: "yearly",
+        cashAllowancesAmount: 0,
+        cashAllowancesFrequency: "yearly",
+      },
+      additionalOptions: {
+        noNationalInsurance: false,
+        blindPersonsAllowance: false,
+        marriedBornBefore6April1935: false,
+        daysPerWeekWorked: 5,
+      },
+    },
+  };
 }

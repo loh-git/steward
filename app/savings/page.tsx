@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import type { SavingsGoal } from "@/types/recurringBudget";
+import type { SavingsGoal } from "@/types/savingsGoals";
 import SavingsClient from "./savings-client";
 
 function mapRow(row: Record<string, unknown>): SavingsGoal {

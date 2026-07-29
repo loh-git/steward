@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
-import type { RecurringExpense } from "@/types/recurringBudget";
+import type { RecurringExpense } from "@/types/recurringExpenses";
 
 function rowToExpense(row: Record<string, unknown>): RecurringExpense {
   return {

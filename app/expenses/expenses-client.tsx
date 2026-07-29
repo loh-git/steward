@@ -8,7 +8,7 @@ import {
   parseRecurringPayload,
   type RecurringFormValues,
 } from "@/app/components/recurring-budget-page";
-import type { RecurringExpense } from "@/types/recurringBudget";
+import type { RecurringExpense } from "@/types/recurringExpenses";
 
 export default function ExpensesClient({
   initialItems,

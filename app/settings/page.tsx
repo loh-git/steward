@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
+import { calculateTakeHome } from "@/utils/take-home/calculate";
+import type { FinancialInfo } from "@/types/financialProfile";
 import SettingsClient from "./settings-client";
 
 export default async function SettingsPage() {
@@ -18,8 +20,14 @@ export default async function SettingsPage() {
     .eq("user_id", user?.id)
     .maybeSingle();
 
-  const monthly = financial?.payload?.financialInfo?.annualIncome
-    ? Math.round(financial.payload.financialInfo.annualIncome / 12)
+  // Was previously annualIncome / 12 — gross salary with no tax, NI, pension, or
+  // student loan deductions applied, so it wasn't take-home pay at all. Run it
+  // through the same calculateTakeHome the dashboard uses instead.
+  const financialInfo = financial?.payload?.financialInfo as
+    | FinancialInfo
+    | undefined;
+  const monthly = financialInfo?.annualIncome
+    ? Math.round(calculateTakeHome(financialInfo).netMonthly)
     : null;
 
   return (

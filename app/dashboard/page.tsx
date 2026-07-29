@@ -1,15 +1,16 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { loadFinancialProfile } from "@/lib/supabase/financial-profile";
-import { formatLastUpdated } from "@/lib/monthly/merge-recurring";
+import { loadFinancialProfile } from "@/utils/supabase/financial-profile";
+import { formatLastUpdated } from "@/utils/format/date";
 import { createClient } from "@/utils/supabase/server";
 import {
   calculateTakeHome,
   getAdjustedPayDateForMonth,
-} from "@/lib/take-home/calculate";
+} from "@/utils/take-home/calculate";
 import type { MonthlyEntry } from "@/types/monthlyPlan";
-import type { RecurringExpense, SavingsGoal } from "@/types/recurringBudget";
+import type { SavingsGoal } from "@/types/savingsGoals";
+import { RecurringExpense } from "@/types/recurringExpenses";
 import DashboardClient from "./components/dashboard-client";
 
 const LOAN_LABELS: Record<string, string> = {

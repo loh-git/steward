@@ -14,6 +14,7 @@ import { type NextRequest, NextResponse } from "next/server";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request: {
@@ -56,8 +57,15 @@ export async function updateSession(request: NextRequest) {
 
     return supabaseResponse;
   } catch (err) {
-    // If we can't contact Supabase or there is a server error, rewrite to a visible connection error page
-    console.error("Supabase connection error in middleware:", err);
+    console.error(err);
+  
+    if (err instanceof Error) {
+      console.error("name:", err.name);
+      console.error("message:", err.message);
+      console.error("cause:", err.cause);
+      console.error("stack:", err.stack);
+    }
+  
     return NextResponse.rewrite(new URL("/error/connection", request.url));
   }
 }

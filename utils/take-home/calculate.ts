@@ -1,27 +1,15 @@
-import type { FinancialInfo, SacrificeFrequency } from "@/app/setup/types";
+import type { 
+  FinancialInfo,
+  SalarySacrificeFrequency,
+} from "@/types/financialProfile";
+import type { TakeHomeResult, TakeHomeDeductions } from "@/types/takeHome";
 import { TAX_YEAR_CONFIG } from "./constants";
 
-export type TakeHomeDeductions = {
-  incomeTax: number;
-  nationalInsurance: number;
-  pension: number;
-  studentLoan: number;
-};
 
-export type TakeHomeResult = {
-  grossAnnual: number;
-  grossMonthly: number;
-  deductions: TakeHomeDeductions;
-  totalDeductionsAnnual: number;
-  netAnnual: number;
-  netMonthly: number;
-  /** True when annual gross salary is zero — estimates hidden. */
-  hasIncome: boolean;
-};
 
 export function frequencyToAnnual(
   amount: number,
-  frequency: SacrificeFrequency,
+  frequency: SalarySacrificeFrequency,
 ): number {
   if (amount <= 0) return 0;
   switch (frequency) {
@@ -50,6 +38,10 @@ export function getAdjustedPayDateForMonth(
     return null;
   }
 
+  // TODO: when dayOfMonth is very early (1st/2nd) and lands on a weekend, shifting
+  // back 1-2 days here can roll the result into the previous calendar month, even
+  // though this function is meant to return a date "for [this] month". Confirm
+  // whether that's the intended payroll behaviour or an edge-case bug.
   if (candidate.getDay() === 0) {
     candidate.setDate(candidate.getDate() - 2);
   } else if (candidate.getDay() === 6) {
@@ -62,6 +54,19 @@ export function getAdjustedPayDateForMonth(
 function parsePersonalAllowance(taxCode: string, defaultAllowance: number): number {
   const trimmed = taxCode.trim().toUpperCase();
   if (!trimmed) return defaultAllowance;
+
+  // Flat-rate codes carry no free-pay allowance at all — everything is taxed.
+  // We approximate this as a zero allowance rather than modelling separate flat-rate
+  // bands, in keeping with this calculator's ballpark level of precision elsewhere.
+  if (trimmed === "BR" || trimmed === "D0" || trimmed === "D1") return 0;
+
+  // K-codes represent a NEGATIVE allowance: untaxed income/benefits HMRC wants to
+  // recover extra tax on, added to taxable pay rather than subtracted from it.
+  // Returning a negative number here works because calculateIncomeTax does
+  // `taxableIncome - allowance`, so a negative allowance increases taxable income.
+  const kMatch = trimmed.match(/^K(\d+)/);
+  if (kMatch) return -(Number(kMatch[1]) * 10);
+
   const match = trimmed.match(/^(\d+)/);
   if (!match) return defaultAllowance;
   return Number(match[1]) * 10;
@@ -140,14 +145,17 @@ function calculateStudentLoans(
   return total;
 }
 
-function calculatePensionAnnual(fi: FinancialInfo, grossAnnual: number): number {
+function calculatePensionAnnual(
+  fi: FinancialInfo,
+  pensionableGrossAnnual: number,
+): number {
   const { pension } = fi;
   if (pension.value <= 0) return 0;
 
-  let pensionable = grossAnnual;
+  let pensionable = pensionableGrossAnnual;
   if (pension.scheme === "auto-enrolment" || pension.basedOnQualifyingEarnings) {
     const { lower, upper } = TAX_YEAR_CONFIG[fi.taxYear].pensionQualifying;
-    pensionable = Math.min(Math.max(grossAnnual - lower, 0), upper - lower);
+    pensionable = Math.min(Math.max(pensionableGrossAnnual - lower, 0), upper - lower);
   }
 
   if (pension.type === "percentage") {
@@ -173,6 +181,11 @@ function annualOvertime(fi: FinancialInfo, baseAnnual: number): number {
   return band1 + band2;
 }
 
+/**
+ * @description The work-horse function for calculating the take-home pay for a user.
+ * @param fi Financial information including annual income, tax code, pension, student loans, salary sacrifice, taxable benefits, overtime, bonus, and additional options.
+ * @returns An object containing the gross annual, gross monthly, deductions, total deductions annual, net annual, net monthly, and whether the user has income.
+ */
 export function calculateTakeHome(fi: FinancialInfo): TakeHomeResult {
   const config = TAX_YEAR_CONFIG[fi.taxYear];
   const baseSalary = fi.annualIncome;
@@ -218,13 +231,26 @@ export function calculateTakeHome(fi: FinancialInfo): TakeHomeResult {
   );
   const childcareAnnual = fi.childcare.monthlyVoucherValue * 12;
 
-  const pensionAnnual = calculatePensionAnnual(fi, grossAnnual);
+  // Only fold bonus/overtime/cash allowances into pensionable pay if the user has
+  // explicitly opted each one in — otherwise pension contributions are based on
+  // base salary alone.
+  const pensionableGrossAnnual =
+    baseSalary +
+    (fi.pension.includeBonus ? bonusAnnual : 0) +
+    (fi.pension.includeOvertime ? overtimeAnnual : 0) +
+    (fi.pension.includeCashAllowances ? cashAllowances : 0);
+
+  const pensionAnnual = calculatePensionAnnual(fi, pensionableGrossAnnual);
   const pensionReducesTaxAndNI =
     fi.pension.scheme === "salary-sacrifice" || fi.pension.scheme === "auto-enrolment";
 
   let incomeForTax = grossAnnual - taxExemptSacrifice - childcareAnnual;
   let incomeForNI = grossAnnual - taxExemptSacrifice - niOnlySacrifice;
 
+  // Only salary-sacrifice/auto-enrolment pensions reduce pay before tax and NI are
+  // worked out — "employer"/"personal" pensions come out of already-taxed-and-NI'd
+  // net pay, so they must NOT reduce incomeForNI (see totalDeductionsAnnual below,
+  // where pensionAnnual is still deducted from net pay for those schemes instead).
   if (pensionReducesTaxAndNI) {
     incomeForTax -= pensionAnnual;
     incomeForNI -= pensionAnnual;
@@ -240,21 +266,25 @@ export function calculateTakeHome(fi: FinancialInfo): TakeHomeResult {
     allowance += config.blindPersonsAllowance;
   }
 
-  if (incomeForTax > 100_000) {
+  // TODO: verify whether Blind Person's Allowance should be excluded from the
+  // >£100k taper below — HMRC's income-related reduction is meant to apply to the
+  // personal allowance only, not BPA, but here they're combined before tapering.
+  //
+  // allowance > 0 guard: K-code allowances are intentionally negative (see
+  // parsePersonalAllowance above), and this taper math only makes sense for a
+  // positive allowance being reduced, not a negative one being adjusted.
+  if (incomeForTax > 100_000 && allowance > 0) {
     const taper = Math.min((incomeForTax - 100_000) / 2, allowance);
     allowance = Math.max(allowance - taper, 0);
   }
 
-  const incomeTax = calculateIncomeTax(
-    incomeForTax,
-    allowance,
-    fi.residentInScotland,
-    config,
-  );
-
-  if (!pensionReducesTaxAndNI) {
-    incomeForNI -= pensionAnnual;
-  }
+  // NT ("No Tax") codes mean no income tax is due at all, which isn't something an
+  // allowance figure alone can express (a high enough income would still be taxable
+  // even with a very large allowance), so it's handled as its own case here.
+  const isNoTaxCode = fi.taxCode.trim().toUpperCase() === "NT";
+  const incomeTax = isNoTaxCode
+    ? 0
+    : calculateIncomeTax(incomeForTax, allowance, fi.residentInScotland, config);
 
   const nationalInsurance = calculateNI(
     incomeForNI,
@@ -297,11 +327,5 @@ export function calculateTakeHome(fi: FinancialInfo): TakeHomeResult {
   };
 }
 
-export function formatGBP(amount: number): string {
-  return new Intl.NumberFormat("en-GB", {
-    style: "currency",
-    currency: "GBP",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(amount);
-}
+// Simple function to format a number as a GBP string
+

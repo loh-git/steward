@@ -1,5 +1,5 @@
-import type { TakeHomeResult } from "@/lib/take-home/calculate";
-import { formatGBP } from "@/lib/take-home/calculate";
+import type { TakeHomeResult } from "@/types/takeHome";
+import { formatGBP } from "@/utils/format/currency";
 
 type TakeHomeSummaryProps = {
   result: TakeHomeResult;
@@ -65,7 +65,9 @@ export default function TakeHomeSummary({
         </div>
         <div>
           <dt className="text-zinc-500">National Insurance</dt>
-          <dd className="font-medium">−{formatGBP(deductions.nationalInsurance)}</dd>
+          <dd className="font-medium">
+            −{formatGBP(deductions.nationalInsurance)}
+          </dd>
         </div>
         <div>
           <dt className="text-zinc-500">Pension</dt>

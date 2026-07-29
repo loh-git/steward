@@ -6,9 +6,9 @@ import { redirect } from "next/navigation";
 import {
   FINANCIAL_INPUT_COOKIE,
   requireAuthUserId,
-} from "@/lib/supabase/financial-profile";
+} from "@/utils/supabase/financial-profile";
 import { createClient } from "@/utils/supabase/server";
-import type { FinancialProfilePayload } from "./types";
+import type { FinancialProfilePayload } from "@/types/financialProfile";
 
 export async function saveFinancialProfile(payload: FinancialProfilePayload) {
   const userId = await requireAuthUserId();

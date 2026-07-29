@@ -1,4 +1,4 @@
-import type { TaxYear } from "@/app/setup/types";
+import type { TaxYear } from "@/types/financialProfile";
 
 /** HMRC-style figures aligned with The Salary Calculator defaults. */
 export type TaxYearConfig = {

@@ -1,6 +1,8 @@
 import type { MonthlyEntry } from "@/types/monthlyPlan";
 import { ChartIcon } from "./icons";
 import MonthSummaryCard from "./month-summary-card";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 type YearlyPlannerSectionProps = {
   year: number;
@@ -8,6 +10,8 @@ type YearlyPlannerSectionProps = {
   months: MonthlyEntry[];
   baseNetMonthly: number;
   onZoomMonth: (month: number) => void;
+  showAllMonths: boolean;
+  onShowAllMonthsChange: () => void;
 };
 
 export default function YearlyPlannerSection({
@@ -16,7 +20,14 @@ export default function YearlyPlannerSection({
   months,
   baseNetMonthly,
   onZoomMonth,
+  showAllMonths,
+  onShowAllMonthsChange,
 }: YearlyPlannerSectionProps) {
+  const styles = {
+    chevronButtons:
+      "rounded-lg border border-slate-200 px-1.5 py-1 text-sm text-slate-600 transition hover:bg-slate-50",
+  };
+
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-5">
@@ -27,11 +38,18 @@ export default function YearlyPlannerSection({
         <div className="flex items-center gap-2">
           <button
             type="button"
+            className="rounded-lg border border-slate-200 px-2.5 py-0.5 text-md text-white bg-violet-600 transition hover:bg-violet-500"
+            onClick={onShowAllMonthsChange}
+          >
+            {showAllMonths ? "Show Remaining Months" : "Show All Months"}
+          </button>
+          <button
+            type="button"
             onClick={() => onYearChange(year - 1)}
-            className="rounded-lg border border-slate-200 px-2.5 py-1 text-sm text-slate-600 transition hover:bg-slate-50"
+            className={styles.chevronButtons}
             aria-label="Previous year"
           >
-            ‹
+            <FontAwesomeIcon icon={faAngleLeft} className="h-3 w-3" />
           </button>
           <span className="min-w-[3rem] text-center font-semibold text-slate-800">
             {year}
@@ -39,10 +57,10 @@ export default function YearlyPlannerSection({
           <button
             type="button"
             onClick={() => onYearChange(year + 1)}
-            className="rounded-lg border border-slate-200 px-2.5 py-1 text-sm text-slate-600 transition hover:bg-slate-50"
+            className={styles.chevronButtons}
             aria-label="Next year"
           >
-            ›
+            <FontAwesomeIcon icon={faAngleRight} className="h-3 w-3" />
           </button>
         </div>
       </div>

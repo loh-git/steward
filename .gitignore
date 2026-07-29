@@ -44,5 +44,6 @@ next-env.d.ts
 .vscode/*
 
 STRUCTURE.md
+LEARNING.md
 supabase/.temp/
 supabase/README.md

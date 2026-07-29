@@ -1,6 +1,6 @@
 import Link from "next/link";
-import type { FinancialInfo } from "@/app/setup/types";
-import { formatGBP } from "@/lib/format/currency";
+import type { FinancialInfo } from "@/types/financialProfile";
+import { formatGBP } from "@/utils/format/currency";
 import { SettingsIcon, UserIcon } from "./icons";
 
 type ProfileCardProps = {
@@ -20,7 +20,9 @@ function pensionLabel(fi: FinancialInfo): string {
     fi.pension.type === "percentage"
       ? `${fi.pension.value}%`
       : `${formatGBP(fi.pension.value)}/mo`;
-  const qualifying = fi.pension.basedOnQualifyingEarnings ? " (qualifying)" : "";
+  const qualifying = fi.pension.basedOnQualifyingEarnings
+    ? " (qualifying)"
+    : "";
   return `${scheme}: ${value}${qualifying}`;
 }
 

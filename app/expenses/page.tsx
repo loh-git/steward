@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import type { RecurringExpense } from "@/types/recurringBudget";
+import type { RecurringExpense } from "@/types/recurringExpenses";
 import ExpensesClient from "./expenses-client";
 
 function mapRow(row: Record<string, unknown>): RecurringExpense {
