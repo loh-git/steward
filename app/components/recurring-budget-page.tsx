@@ -18,14 +18,6 @@ export type RecurringFormValues = {
   endsUntilMonth: string;
 };
 
-function getDefaultStartDateValues() {
-  const today = new Date();
-  return {
-    startsFromYear: String(today.getFullYear()),
-    startsFromMonth: String(today.getMonth() + 1),
-  };
-}
-
 export const emptyRecurringForm = (): RecurringFormValues => ({
   label: "",
   amount: "",
@@ -95,7 +87,6 @@ export function RecurringBudgetPage({
 
   const startEdit = (item: RecurringItem) => {
     setEditingId(item.id);
-    const defaultStart = getDefaultStartDateValues();
     setForm({
       label: item.label,
       amount: item.amount != null ? String(item.amount) : "",
@@ -104,8 +95,14 @@ export function RecurringBudgetPage({
         item.currentBalance != null ? String(item.currentBalance) : "",
       earnsInterest: item.earnsInterest ?? false,
       interestRate: item.interestRate != null ? String(item.interestRate) : "",
-      startsFromYear: defaultStart.startsFromYear,
-      startsFromMonth: defaultStart.startsFromMonth,
+      // Previously defaulted to today's date on every edit, silently
+      // overwriting the item's real start date on save even if the user
+      // only meant to fix a typo in the label. Show what's actually stored,
+      // same as endsUntilYear/endsUntilMonth below.
+      startsFromYear:
+        item.startsFromYear != null ? String(item.startsFromYear) : "",
+      startsFromMonth:
+        item.startsFromMonth != null ? String(item.startsFromMonth) : "",
       endsUntilYear:
         item.endsUntilYear != null ? String(item.endsUntilYear) : "",
       endsUntilMonth:
@@ -357,8 +354,10 @@ export function RecurringBudgetPage({
                   key={item.id}
                   className="flex flex-wrap items-center justify-between gap-3 px-6 py-4"
                 >
-                  <div>
-                    <p className="font-medium text-slate-900">{item.label}</p>
+                  <div className="min-w-0">
+                    <p className="truncate font-medium text-slate-900">
+                      {item.label}
+                    </p>
                     <p className="text-xs text-slate-500">
                       From{" "}
                       {formatPeriod(
@@ -375,7 +374,7 @@ export function RecurringBudgetPage({
                       )}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex shrink-0 items-center gap-3">
                     <span className="font-semibold text-slate-800">
                       {item.usesVariableAmount
                         ? "Varies by month"
@@ -390,7 +389,13 @@ export function RecurringBudgetPage({
                     </button>
                     <button
                       type="button"
-                      onClick={() => onDelete(item.id)}
+                      onClick={() => {
+                        // Deleting is permanent and immediate — a bare click
+                        // was one accidental tap away from silent data loss.
+                        if (window.confirm(`Delete "${item.label}"? This can't be undone.`)) {
+                          onDelete(item.id);
+                        }
+                      }}
                       className="text-slate-300 hover:text-rose-500"
                       aria-label={`Delete ${item.label}`}
                     >

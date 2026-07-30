@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   ChartIcon,
   CloseIcon,
+  GridViewIcon,
   PiggyBankIcon,
   ReceiptIcon,
   SettingsIcon,
@@ -68,6 +69,14 @@ export default function AppSidebar() {
             label="Savings"
             hint="Monthly savings goals"
             active={pathname === "/savings"}
+            onNavigate={close}
+          />
+          <SidebarLink
+            href="/compare"
+            icon={<GridViewIcon className="text-sky-400" />}
+            label="Compare"
+            hint="Line items across the year"
+            active={pathname === "/compare"}
             onNavigate={close}
           />
           <SidebarLink

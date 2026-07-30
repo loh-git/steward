@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { ReceiptIcon } from "@/app/dashboard/components/icons";
 import {
   RecurringBudgetPage,
@@ -43,6 +44,7 @@ export default function ExpensesClient({
         });
         if (!res.ok) throw new Error("Failed to add expense");
         await refresh();
+        toast.success(`${values.label} added.`);
       }}
       onUpdate={async (id, values) => {
         const res = await fetch("/api/recurring-expenses", {
@@ -52,13 +54,16 @@ export default function ExpensesClient({
         });
         if (!res.ok) throw new Error("Failed to update expense");
         await refresh();
+        toast.success(`${values.label} updated.`);
       }}
       onDelete={async (id) => {
+        const label = items.find((item) => item.id === id)?.label ?? "Expense";
         const res = await fetch(`/api/recurring-expenses?id=${id}`, {
           method: "DELETE",
         });
         if (!res.ok) throw new Error("Failed to delete expense");
         await refresh();
+        toast.success(`${label} deleted.`);
       }}
     />
   );

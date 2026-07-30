@@ -97,6 +97,12 @@ export default function TakeHomeCard({
           </div>
         ) : null}
       </div>
+
+      <p className="mt-4 text-[11px] leading-snug text-slate-500">
+        These figures are estimates for planning purposes only and do not
+        constitute financial or tax advice. Consult a qualified professional
+        before making financial decisions.
+      </p>
     </div>
   );
 }

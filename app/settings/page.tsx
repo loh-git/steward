@@ -1,6 +1,11 @@
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { calculateTakeHome } from "@/utils/take-home/calculate";
+import { formatGBP } from "@/utils/format/currency";
+import {
+  formatStudentLoans,
+  pensionLabel,
+} from "@/utils/format/financial-profile";
 import type { FinancialInfo } from "@/types/financialProfile";
 import SettingsClient from "./settings-client";
 
@@ -30,12 +35,28 @@ export default async function SettingsPage() {
     ? Math.round(calculateTakeHome(financialInfo).netMonthly)
     : null;
 
+  // Moved here from the dashboard's old profile card, which was replaced by
+  // the income/outgoings/savings trend chart.
+  const financialDetails = financialInfo
+    ? {
+        grossSalary: formatGBP(financialInfo.annualIncome),
+        taxYear: financialInfo.taxYear,
+        region: financialInfo.residentInScotland
+          ? "Scotland"
+          : "England, Wales & NI",
+        taxCode: financialInfo.taxCode?.trim() || "1257L",
+        pension: pensionLabel(financialInfo),
+        studentLoan: formatStudentLoans(financialInfo.studentLoanPlan),
+      }
+    : null;
+
   return (
     <SettingsClient
       userEmail={user?.email ?? "-"}
       profileName={`${profile?.first_name ?? "-"} ${profile?.last_name ?? ""}`.trim()}
       monthlyTakeHome={monthly}
       hasFinancialProfile={Boolean(financial)}
+      financialDetails={financialDetails}
     />
   );
 }

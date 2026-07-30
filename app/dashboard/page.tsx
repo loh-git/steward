@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { loadFinancialProfile } from "@/utils/supabase/financial-profile";
-import { formatLastUpdated } from "@/utils/format/date";
 import { createClient } from "@/utils/supabase/server";
 import {
   calculateTakeHome,
@@ -12,21 +11,6 @@ import type { MonthlyEntry } from "@/types/monthlyPlan";
 import type { SavingsGoal } from "@/types/savingsGoals";
 import { RecurringExpense } from "@/types/recurringExpenses";
 import DashboardClient from "./components/dashboard-client";
-
-const LOAN_LABELS: Record<string, string> = {
-  plan1: "Plan 1",
-  plan2: "Plan 2",
-  plan4Scotland: "Plan 4 (Scotland)",
-  plan5: "Plan 5",
-  postgraduate: "Postgraduate",
-};
-
-function formatStudentLoans(plans: Record<string, boolean>): string {
-  const active = Object.entries(plans)
-    .filter(([, on]) => on)
-    .map(([key]) => LOAN_LABELS[key] ?? key);
-  return active.length ? active.join(", ") : "None selected";
-}
 
 function parseAllMonthlyRows(
   rows: Array<{
@@ -124,30 +108,15 @@ export default async function Dashboard() {
 
   const currentYear = new Date().getFullYear();
 
-  const [
-    { data: monthsRows },
-    { data: financialRow },
-    { data: profileRow },
-    { data: recurringRows },
-    { data: savingsRows },
-  ] = await Promise.all([
-    supabase
-      .from("monthly_entries")
-      .select("year, month, take_home_salary, incomes, expenditures, savings")
-      .eq("user_id", user.id),
-    supabase
-      .from("financial_profiles")
-      .select("updated_at")
-      .eq("user_id", user.id)
-      .maybeSingle(),
-    supabase
-      .from("profiles")
-      .select("updated_at")
-      .eq("id", user.id)
-      .maybeSingle(),
-    supabase.from("recurring_expenses").select("*").eq("user_id", user.id),
-    supabase.from("savings_goals").select("*").eq("user_id", user.id),
-  ]);
+  const [{ data: monthsRows }, { data: recurringRows }, { data: savingsRows }] =
+    await Promise.all([
+      supabase
+        .from("monthly_entries")
+        .select("year, month, take_home_salary, incomes, expenditures, savings")
+        .eq("user_id", user.id),
+      supabase.from("recurring_expenses").select("*").eq("user_id", user.id),
+      supabase.from("savings_goals").select("*").eq("user_id", user.id),
+    ]);
 
   const allMonths = parseAllMonthlyRows(monthsRows ?? []);
   const { financialInfo: fi, userInfo } = input;
@@ -173,12 +142,6 @@ export default async function Dashboard() {
   return (
     <DashboardClient
       firstName={userInfo.firstName || "there"}
-      lastName={userInfo.lastName}
-      financialInfo={fi}
-      studentLoanLabel={formatStudentLoans(fi.studentLoanPlan)}
-      lastUpdated={formatLastUpdated(
-        profileRow?.updated_at ?? financialRow?.updated_at,
-      )}
       takeHome={takeHome}
       initialYear={currentYear}
       initialMonthsData={allMonths}
