@@ -78,18 +78,18 @@ export default function CompareClient({
   const hasData = expenseRows.length > 0 || goalRows.length > 0;
 
   return (
-    <div className="min-h-screen bg-[#eef1f6] px-4 py-8 sm:px-8">
+    <div className="min-h-screen bg-paper-canvas px-4 py-8 sm:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-start gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-100 text-sky-700">
+            <span className="flex h-11 w-11 items-center justify-center rounded-md bg-ink-100 text-ink-700">
               <GridViewIcon />
             </span>
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">Compare</h1>
-              <p className="mt-1 text-sm text-slate-500">
+              <h1 className="font-display text-3xl font-bold text-ink-900">Compare</h1>
+              <p className="mt-1 text-sm text-ink-500">
                 Recurring expenses and savings goals, side by side across the
-                year — the spreadsheet view.
+                year — the ledger view.
               </p>
             </div>
           </div>
@@ -98,18 +98,18 @@ export default function CompareClient({
             <button
               type="button"
               onClick={() => setYear(year - 1)}
-              className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-slate-600 transition hover:bg-slate-50"
+              className="rounded border border-ink-200 bg-paper-card px-2.5 py-1.5 text-ink-600 transition hover:bg-ink-50"
               aria-label="Previous year"
             >
               <FontAwesomeIcon icon={faAngleLeft} className="h-3 w-3" />
             </button>
-            <span className="min-w-[3.5rem] text-center font-semibold text-slate-800">
+            <span className="min-w-[3.5rem] text-center font-semibold text-ink-800">
               {year}
             </span>
             <button
               type="button"
               onClick={() => setYear(year + 1)}
-              className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-slate-600 transition hover:bg-slate-50"
+              className="rounded border border-ink-200 bg-paper-card px-2.5 py-1.5 text-ink-600 transition hover:bg-ink-50"
               aria-label="Next year"
             >
               <FontAwesomeIcon icon={faAngleRight} className="h-3 w-3" />
@@ -118,38 +118,38 @@ export default function CompareClient({
         </div>
 
         {!hasData ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-            <p className="text-sm text-slate-500">
+          <div className="rounded-lg border border-ink-200 bg-paper-card p-8 text-center shadow-sm">
+            <p className="text-sm text-ink-500">
               No recurring expenses or savings goals yet — add some on the{" "}
-              <a href="/expenses" className="text-violet-600 hover:underline">
+              <a href="/expenses" className="text-ledger-600 hover:underline">
                 Expenses
               </a>{" "}
               or{" "}
-              <a href="/savings" className="text-violet-600 hover:underline">
+              <a href="/savings" className="text-ledger-600 hover:underline">
                 Savings
               </a>{" "}
               pages and they&apos;ll line up here.
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="overflow-x-auto rounded-lg border border-ink-200 bg-paper-card shadow-sm">
             <table className="w-full min-w-max border-collapse text-sm">
               <thead>
-                <tr className="border-b border-slate-100">
-                  <th className="sticky left-0 z-10 min-w-[180px] bg-white px-4 py-3 text-left font-semibold text-slate-700">
+                <tr className="border-b border-ink-100">
+                  <th className="sticky left-0 z-10 min-w-[180px] bg-paper-card px-4 py-3 text-left font-semibold text-ink-700">
                     Item
                   </th>
                   {MONTH_NAMES.map((name, i) => (
                     <th
                       key={name}
-                      className={`min-w-[84px] px-3 py-3 text-right font-semibold text-slate-700 ${
-                        i === currentMonthIndex ? "bg-violet-50" : ""
+                      className={`min-w-[84px] px-3 py-3 text-right font-semibold text-ink-700 ${
+                        i === currentMonthIndex ? "bg-ledger-50" : ""
                       }`}
                     >
                       {name.slice(0, 3)}
                     </th>
                   ))}
-                  <th className="min-w-[100px] px-4 py-3 text-right font-semibold text-slate-700">
+                  <th className="min-w-[100px] px-4 py-3 text-right font-semibold text-ink-700">
                     Total
                   </th>
                 </tr>
@@ -163,14 +163,14 @@ export default function CompareClient({
                         key={row.id}
                         row={row}
                         currentMonthIndex={currentMonthIndex}
-                        amountClass="text-rose-600"
+                        amountClass="text-ledger-600"
                       />
                     ))}
                     <CompareTotalsRow
                       label="Outgoings total"
                       totals={columnTotals(expenseRows)}
                       currentMonthIndex={currentMonthIndex}
-                      amountClass="text-rose-700"
+                      amountClass="text-ledger-700"
                     />
                   </>
                 ) : null}
@@ -183,14 +183,14 @@ export default function CompareClient({
                         key={row.id}
                         row={row}
                         currentMonthIndex={currentMonthIndex}
-                        amountClass="text-violet-600"
+                        amountClass="text-brass-600"
                       />
                     ))}
                     <CompareTotalsRow
                       label="Savings total"
                       totals={columnTotals(goalRows)}
                       currentMonthIndex={currentMonthIndex}
-                      amountClass="text-violet-700"
+                      amountClass="text-brass-700"
                     />
                   </>
                 ) : null}
@@ -214,16 +214,16 @@ function CompareRowLine({
 }) {
   const total = row.values.reduce<number>((sum, v) => sum + (v ?? 0), 0);
   return (
-    <tr className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60">
-      <td className="sticky left-0 z-10 bg-white px-4 py-2.5 font-medium text-slate-800">
+    <tr className="border-b border-ink-50 last:border-0 hover:bg-ink-50/60">
+      <td className="sticky left-0 z-10 bg-paper-card px-4 py-2.5 font-medium text-ink-800">
         {row.label}
       </td>
       {row.values.map((value, i) => (
         <td
           key={i}
           className={`px-3 py-2.5 text-right tabular-nums ${
-            i === currentMonthIndex ? "bg-violet-50" : ""
-          } ${value == null ? "text-slate-300" : amountClass}`}
+            i === currentMonthIndex ? "bg-ledger-50" : ""
+          } ${value == null ? "text-ink-300" : amountClass}`}
         >
           {value == null ? "–" : formatGBP(value)}
         </td>
@@ -240,7 +240,7 @@ function CompareSectionHeader({ label }: { label: string }) {
     <tr>
       <td
         colSpan={14}
-        className="bg-slate-50 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-500"
+        className="bg-ink-50 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-ink-500"
       >
         {label}
       </td>
@@ -261,15 +261,15 @@ function CompareTotalsRow({
 }) {
   const grandTotal = totals.reduce((sum, v) => sum + v, 0);
   return (
-    <tr className="border-b border-slate-100 bg-slate-50/60 font-semibold">
-      <td className="sticky left-0 z-10 bg-slate-50/60 px-4 py-2.5 text-slate-700">
+    <tr className="border-b border-ink-100 bg-ink-50/60 font-semibold">
+      <td className="sticky left-0 z-10 bg-ink-50/60 px-4 py-2.5 text-ink-700">
         {label}
       </td>
       {totals.map((value, i) => (
         <td
           key={i}
           className={`px-3 py-2.5 text-right tabular-nums ${amountClass} ${
-            i === currentMonthIndex ? "bg-violet-100" : ""
+            i === currentMonthIndex ? "bg-ledger-100" : ""
           }`}
         >
           {formatGBP(value)}

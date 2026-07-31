@@ -37,17 +37,17 @@ export default function Register() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-50 dark:bg-black">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-paper-canvas">
+      <h1 className="mb-6 font-display text-3xl font-bold text-ink-900">
         Create an Account
       </h1>
       <form
-        className="w-full max-w-sm bg-white dark:bg-zinc-900 p-8 rounded-lg shadow"
+        className="w-full max-w-sm rounded-lg border border-ink-200 bg-paper-card p-8 shadow-sm"
         onSubmit={handleSubmit}
       >
         <div className="mb-4">
           <label
-            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            className="mb-2 block text-sm font-bold text-ink-700"
             htmlFor="email"
           >
             Email
@@ -56,7 +56,7 @@ export default function Register() {
             id="email"
             type="email"
             placeholder=""
-            className={`w-full p-2 border rounded dark:bg-zinc-800 ${emailTouched && !isValidEmail() && email ? "border-red-500" : "border-gray-300"}`}
+            className={`w-full rounded border p-2 ${emailTouched && !isValidEmail() && email ? "border-ledger-500" : "border-ink-200"}`}
             required
             value={email}
             onChange={(event) => {
@@ -65,12 +65,12 @@ export default function Register() {
             onBlur={() => setEmailTouched(true)}
           />
           {emailTouched && !isValidEmail() && email && (
-            <p className="text-red-500 text-xs mt-1">Invalid e-mail address</p>
+            <p className="mt-1 text-xs text-ledger-600">Invalid e-mail address</p>
           )}
         </div>
         <div className="mb-6">
           <label
-            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            className="mb-2 block text-sm font-bold text-ink-700"
             htmlFor="password"
           >
             Password
@@ -79,7 +79,7 @@ export default function Register() {
             id="password"
             type="password"
             placeholder="Password"
-            className={`w-full p-2 border rounded dark:bg-zinc-800 ${highlightMismatch ? "border-red-500" : "border-gray-300"}`}
+            className={`w-full rounded border p-2 ${highlightMismatch ? "border-ledger-500" : "border-ink-200"}`}
             required
             value={password}
             onChange={(event) => {
@@ -87,14 +87,14 @@ export default function Register() {
             }}
           />
           {highlightMismatch && (
-            <p className="text-red-500 text-xs mt-1">
+            <p className="mt-1 text-xs text-ledger-600">
               Passwords don&apos;t match
             </p>
           )}
         </div>
         <div className="mb-6">
           <label
-            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            className="mb-2 block text-sm font-bold text-ink-700"
             htmlFor="confirmPassword"
           >
             Confirm Password
@@ -103,7 +103,7 @@ export default function Register() {
             id="confirmPassword"
             type="password"
             placeholder="Confirm Password"
-            className={`w-full p-2 border rounded dark:bg-zinc-800 ${highlightMismatch ? "border-red-500" : "border-gray-300"}`}
+            className={`w-full rounded border p-2 ${highlightMismatch ? "border-ledger-500" : "border-ink-200"}`}
             required
             value={confirmPassword}
             onChange={(event) => {
@@ -111,14 +111,14 @@ export default function Register() {
             }}
           />
           {highlightMismatch && (
-            <p className="text-red-500 text-xs mt-1">
+            <p className="mt-1 text-xs text-ledger-600">
               Passwords don&apos;t match
             </p>
           )}
         </div>
         <div className="flex items-center justify-between">
           <button
-            className={`w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 ${!passwordMatch || !email || !password ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={`w-full rounded bg-ledger-600 px-4 py-2 text-white hover:bg-ledger-700 ${!passwordMatch || !email || !password ? "opacity-50 cursor-not-allowed" : ""}`}
             type="submit"
             disabled={validSubmit}
           >

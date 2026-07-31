@@ -14,9 +14,11 @@ export default function TakeHomeSummary({
 }: TakeHomeSummaryProps) {
   if (!result.hasIncome) {
     return (
-      <section className="rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-6">
-        <h2 className="text-xl font-semibold mb-2">Estimated take-home pay</h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+      <section className="rounded-lg border border-dashed border-ink-300 bg-paper-card p-6">
+        <h2 className="mb-2 font-display text-xl font-semibold text-ink-900">
+          Estimated take-home pay
+        </h2>
+        <p className="text-sm text-ink-500">
           Enter your annual gross salary to see monthly and yearly take-home
           estimates.
         </p>
@@ -27,67 +29,69 @@ export default function TakeHomeSummary({
   const { deductions } = result;
 
   return (
-    <section className="rounded-lg border border-emerald-200 dark:border-emerald-900 bg-white dark:bg-zinc-900 p-6 shadow-sm">
-      <div className="flex flex-wrap items-baseline justify-between gap-2 mb-4">
-        <h2 className="text-xl font-semibold">Estimated take-home pay</h2>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+    <section className="rounded-lg border border-bottle-200 bg-paper-card p-6 shadow-sm">
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="font-display text-xl font-semibold text-ink-900">
+          Estimated take-home pay
+        </h2>
+        <p className="text-xs text-ink-500">
           {taxYear} · {regionLabel} · illustrative only
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        <div className="rounded-lg bg-emerald-50 dark:bg-emerald-950/40 p-4">
-          <p className="text-sm text-emerald-800 dark:text-emerald-300 mb-1">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="rounded-lg bg-bottle-50 p-4">
+          <p className="mb-1 text-sm text-bottle-800">
             Monthly take-home
           </p>
-          <p className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">
+          <p className="font-display text-3xl font-bold text-bottle-900">
             {formatGBP(result.netMonthly)}
           </p>
         </div>
-        <div className="rounded-lg bg-zinc-50 dark:bg-zinc-800/50 p-4">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-1">
+        <div className="rounded-lg bg-ink-50 p-4">
+          <p className="mb-1 text-sm text-ink-600">
             Yearly take-home
           </p>
-          <p className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+          <p className="font-display text-3xl font-bold text-ink-900">
             {formatGBP(result.netAnnual)}
           </p>
         </div>
       </div>
 
-      <dl className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm border-t border-zinc-200 dark:border-zinc-800 pt-4">
+      <dl className="grid grid-cols-2 gap-3 border-t border-ink-200 pt-4 text-sm sm:grid-cols-3">
         <div>
-          <dt className="text-zinc-500">Gross (annual)</dt>
-          <dd className="font-medium">{formatGBP(result.grossAnnual)}</dd>
+          <dt className="text-ink-500">Gross (annual)</dt>
+          <dd className="font-medium text-ink-800">{formatGBP(result.grossAnnual)}</dd>
         </div>
         <div>
-          <dt className="text-zinc-500">Income tax</dt>
-          <dd className="font-medium">−{formatGBP(deductions.incomeTax)}</dd>
+          <dt className="text-ink-500">Income tax</dt>
+          <dd className="font-medium text-ink-800">−{formatGBP(deductions.incomeTax)}</dd>
         </div>
         <div>
-          <dt className="text-zinc-500">National Insurance</dt>
-          <dd className="font-medium">
+          <dt className="text-ink-500">National Insurance</dt>
+          <dd className="font-medium text-ink-800">
             −{formatGBP(deductions.nationalInsurance)}
           </dd>
         </div>
         <div>
-          <dt className="text-zinc-500">Pension</dt>
-          <dd className="font-medium">−{formatGBP(deductions.pension)}</dd>
+          <dt className="text-ink-500">Pension</dt>
+          <dd className="font-medium text-ink-800">−{formatGBP(deductions.pension)}</dd>
         </div>
         <div>
-          <dt className="text-zinc-500">Student loan</dt>
-          <dd className="font-medium">−{formatGBP(deductions.studentLoan)}</dd>
+          <dt className="text-ink-500">Student loan</dt>
+          <dd className="font-medium text-ink-800">−{formatGBP(deductions.studentLoan)}</dd>
         </div>
         <div>
-          <dt className="text-zinc-500">Gross (monthly)</dt>
-          <dd className="font-medium">{formatGBP(result.grossMonthly)}</dd>
+          <dt className="text-ink-500">Gross (monthly)</dt>
+          <dd className="font-medium text-ink-800">{formatGBP(result.grossMonthly)}</dd>
         </div>
       </dl>
 
-      <p className="mt-4 text-xs text-zinc-500 dark:text-zinc-400">
+      <p className="mt-4 text-xs text-ink-500">
         Based on UK PAYE rules similar to{" "}
         <a
           href="https://www.thesalarycalculator.co.uk/salary.php"
-          className="text-blue-600 hover:underline"
+          className="text-ledger-600 hover:underline"
           target="_blank"
           rel="noreferrer"
         >

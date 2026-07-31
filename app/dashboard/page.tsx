@@ -86,18 +86,18 @@ export default async function Dashboard() {
 
   if (!input) {
     return (
-      <div className="min-h-screen bg-[#eef1f6] p-8">
+      <div className="min-h-screen bg-paper-canvas p-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h1 className="mb-4 text-3xl font-bold text-slate-900">
+          <h1 className="mb-4 font-display text-3xl font-bold text-ink-900">
             No Financial Data
           </h1>
-          <p className="mb-6 text-slate-600">
+          <p className="mb-6 text-ink-600">
             Complete the setup form to save your financial profile and see
             take-home estimates.
           </p>
           <a
             href="/setup"
-            className="rounded-lg bg-violet-600 px-4 py-2 text-white hover:bg-violet-700"
+            className="rounded bg-ledger-600 px-4 py-2 text-white hover:bg-ledger-700"
           >
             Go to Setup
           </a>

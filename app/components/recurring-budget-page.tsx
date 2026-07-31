@@ -135,46 +135,46 @@ export function RecurringBudgetPage({
   };
 
   return (
-    <div className="min-h-screen bg-[#eef1f6] px-4 py-8 sm:px-8">
+    <div className="min-h-screen bg-paper-canvas px-4 py-8 sm:px-8">
       <div className="mx-auto max-w-3xl">
         <div className="mb-8 flex items-start gap-3">
           <span
-            className={`flex h-11 w-11 items-center justify-center rounded-xl ${accentClass}`}
+            className={`flex h-11 w-11 items-center justify-center rounded-md ${accentClass}`}
           >
             {icon}
           </span>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">{title}</h1>
-            <p className="mt-1 text-sm text-slate-500">{description}</p>
+            <h1 className="font-display text-3xl font-bold text-ink-900">{title}</h1>
+            <p className="mt-1 text-sm text-ink-500">{description}</p>
           </div>
         </div>
 
         {error ? (
-          <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
+          <p className="mb-4 rounded-md border border-ledger-200 bg-ledger-50 px-4 py-2 text-sm text-ledger-700">
             {error}
           </p>
         ) : null}
 
-        <div className="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">
+        <div className="mb-8 rounded-lg border border-ink-200 bg-paper-card p-6 shadow-sm">
+          <h2 className="mb-4 font-display text-lg font-semibold text-ink-900">
             {editingId ? "Edit entry" : "Add entry"}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <label className="block sm:col-span-2">
-                <span className="mb-1 block text-sm font-medium text-slate-700">
+                <span className="mb-1 block text-sm font-medium text-ink-700">
                   Description
                 </span>
                 <input
                   value={form.label}
                   onChange={(e) => setForm({ ...form, label: e.target.value })}
                   placeholder="e.g. Rent, Groceries"
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                  className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
                   required
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm font-medium text-slate-700">
+                <span className="mb-1 block text-sm font-medium text-ink-700">
                   Amount (£ / month)
                 </span>
                 <input
@@ -183,14 +183,14 @@ export function RecurringBudgetPage({
                   step={0.01}
                   value={form.amount}
                   onChange={(e) => setForm({ ...form, amount: e.target.value })}
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                  className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
                   required={!form.usesVariableAmount}
                   disabled={form.usesVariableAmount}
                 />
               </label>
               {showSavingsFields ? (
                 <>
-                  <label className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 sm:col-span-2">
+                  <label className="flex items-center gap-2 rounded border border-ink-200 px-3 py-2 text-sm text-ink-700 sm:col-span-2">
                     <input
                       type="checkbox"
                       checked={form.usesVariableAmount ?? false}
@@ -206,7 +206,7 @@ export function RecurringBudgetPage({
                     Amount varies by month and is chosen later
                   </label>
                   <label className="block">
-                    <span className="mb-1 block text-sm font-medium text-slate-700">
+                    <span className="mb-1 block text-sm font-medium text-ink-700">
                       Already saved (£)
                     </span>
                     <input
@@ -217,10 +217,10 @@ export function RecurringBudgetPage({
                       onChange={(e) =>
                         setForm({ ...form, currentBalance: e.target.value })
                       }
-                      className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                      className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
                     />
                   </label>
-                  <label className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 sm:col-span-2">
+                  <label className="flex items-center gap-2 rounded border border-ink-200 px-3 py-2 text-sm text-ink-700 sm:col-span-2">
                     <input
                       type="checkbox"
                       checked={form.earnsInterest ?? false}
@@ -232,7 +232,7 @@ export function RecurringBudgetPage({
                   </label>
                   {form.earnsInterest ? (
                     <label className="block sm:col-span-2">
-                      <span className="mb-1 block text-sm font-medium text-slate-700">
+                      <span className="mb-1 block text-sm font-medium text-ink-700">
                         Interest rate (% annual)
                       </span>
                       <input
@@ -243,7 +243,7 @@ export function RecurringBudgetPage({
                         onChange={(e) =>
                           setForm({ ...form, interestRate: e.target.value })
                         }
-                        className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                        className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
                       />
                     </label>
                   ) : null}
@@ -251,11 +251,11 @@ export function RecurringBudgetPage({
               ) : null}
             </div>
 
-            <fieldset className="rounded-xl border border-slate-100 p-4">
-              <legend className="px-1 text-sm font-medium text-slate-700">
+            <fieldset className="rounded-md border border-ink-100 p-4">
+              <legend className="px-1 text-sm font-medium text-ink-700">
                 Starts from (optional)
               </legend>
-              <p className="mb-3 text-xs text-slate-500">
+              <p className="mb-3 text-xs text-ink-500">
                 Leave blank and this change will apply from the current month
                 when saved.
               </p>
@@ -265,7 +265,7 @@ export function RecurringBudgetPage({
                   onChange={(e) =>
                     setForm({ ...form, startsFromMonth: e.target.value })
                   }
-                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                  className="rounded border border-ink-200 px-3 py-2 text-sm"
                 >
                   <option value="">Month</option>
                   {MONTH_NAMES.map((name, i) => (
@@ -281,13 +281,13 @@ export function RecurringBudgetPage({
                   onChange={(e) =>
                     setForm({ ...form, startsFromYear: e.target.value })
                   }
-                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                  className="rounded border border-ink-200 px-3 py-2 text-sm"
                 />
               </div>
             </fieldset>
 
-            <fieldset className="rounded-xl border border-slate-100 p-4">
-              <legend className="px-1 text-sm font-medium text-slate-700">
+            <fieldset className="rounded-md border border-ink-100 p-4">
+              <legend className="px-1 text-sm font-medium text-ink-700">
                 Recurs until (optional)
               </legend>
               <div className="grid grid-cols-2 gap-3">
@@ -296,7 +296,7 @@ export function RecurringBudgetPage({
                   onChange={(e) =>
                     setForm({ ...form, endsUntilMonth: e.target.value })
                   }
-                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                  className="rounded border border-ink-200 px-3 py-2 text-sm"
                 >
                   <option value="">Month</option>
                   {MONTH_NAMES.map((name, i) => (
@@ -312,7 +312,7 @@ export function RecurringBudgetPage({
                   onChange={(e) =>
                     setForm({ ...form, endsUntilYear: e.target.value })
                   }
-                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                  className="rounded border border-ink-200 px-3 py-2 text-sm"
                 />
               </div>
             </fieldset>
@@ -321,7 +321,7 @@ export function RecurringBudgetPage({
               <button
                 type="submit"
                 disabled={submitting}
-                className={`rounded-lg px-4 py-2 text-sm font-medium text-white disabled:opacity-60 ${buttonClass}`}
+                className={`rounded px-4 py-2 text-sm font-medium text-white disabled:opacity-60 ${buttonClass}`}
               >
                 {submitting ? "Saving…" : editingId ? "Update" : "Add"}
               </button>
@@ -329,7 +329,7 @@ export function RecurringBudgetPage({
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="rounded-lg border border-slate-200 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                  className="rounded border border-ink-200 px-4 py-2 text-sm text-ink-600 hover:bg-ink-50"
                 >
                   Cancel
                 </button>
@@ -338,27 +338,27 @@ export function RecurringBudgetPage({
           </form>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <h2 className="border-b border-slate-100 px-6 py-4 text-lg font-semibold text-slate-900">
+        <div className="rounded-lg border border-ink-200 bg-paper-card shadow-sm">
+          <h2 className="border-b border-ink-100 px-6 py-4 font-display text-lg font-semibold text-ink-900">
             Your entries ({items.length})
           </h2>
           {items.length === 0 ? (
-            <p className="px-6 py-8 text-sm text-slate-500">
+            <p className="px-6 py-8 text-sm text-ink-500">
               No entries yet. Add your first one above — they will appear in
               each month&apos;s planner automatically.
             </p>
           ) : (
-            <ul className="divide-y divide-slate-100">
+            <ul className="divide-y divide-ink-100">
               {items.map((item) => (
                 <li
                   key={item.id}
                   className="flex flex-wrap items-center justify-between gap-3 px-6 py-4"
                 >
                   <div className="min-w-0">
-                    <p className="truncate font-medium text-slate-900">
+                    <p className="truncate font-medium text-ink-900">
                       {item.label}
                     </p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-ink-500">
                       From{" "}
                       {formatPeriod(
                         item.startsFromYear,
@@ -375,7 +375,7 @@ export function RecurringBudgetPage({
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-3">
-                    <span className="font-semibold text-slate-800">
+                    <span className="font-semibold text-ink-800">
                       {item.usesVariableAmount
                         ? "Varies by month"
                         : `${formatGBP(item.amount ?? 0)}/mo`}
@@ -383,7 +383,7 @@ export function RecurringBudgetPage({
                     <button
                       type="button"
                       onClick={() => startEdit(item)}
-                      className="text-sm text-violet-600 hover:underline"
+                      className="text-sm text-ledger-600 hover:underline"
                     >
                       Edit
                     </button>
@@ -396,7 +396,7 @@ export function RecurringBudgetPage({
                           onDelete(item.id);
                         }
                       }}
-                      className="text-slate-300 hover:text-rose-500"
+                      className="text-ink-300 hover:text-ledger-500"
                       aria-label={`Delete ${item.label}`}
                     >
                       <TrashIcon />

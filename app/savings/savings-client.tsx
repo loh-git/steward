@@ -31,9 +31,9 @@ export default function SavingsClient({
     <RecurringBudgetPage
       title="Savings Goals"
       description="Define monthly savings targets. These pre-fill each month's savings column in your planner."
-      icon={<PiggyBankIcon className="text-violet-600" />}
-      accentClass="bg-violet-100"
-      buttonClass="bg-violet-600 hover:bg-violet-700"
+      icon={<PiggyBankIcon className="text-brass-700" />}
+      accentClass="bg-brass-100"
+      buttonClass="bg-brass-600 hover:bg-brass-700"
       showSavingsFields
       items={items}
       onAdd={async (values: RecurringFormValues) => {

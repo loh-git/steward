@@ -9,19 +9,19 @@ export function Header() {
   const { setOpen } = useSidebar();
 
   return (
-    <header className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
+    <header className="flex items-center justify-between border-b border-ink-200 bg-paper-card px-6 py-4">
       <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="rounded-lg p-2 text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-zinc-800"
+          className="rounded-md p-2 text-ink-700 transition hover:bg-ink-100"
           aria-label="Open menu"
         >
           <MenuIcon className="w-6 h-6" />
         </button>
         <Link
           href="/dashboard"
-          className="text-xl font-bold text-gray-900 dark:text-white"
+          className="font-display text-xl font-bold text-ink-900 transition hover:text-ledger-700"
         >
           Steward
         </Link>
@@ -29,7 +29,7 @@ export function Header() {
       <div className="flex items-center gap-3">
         <button
           onClick={() => signOut()}
-          className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+          className="px-4 py-2 text-sm font-medium text-ink-600 hover:text-ink-900"
         >
           Log Out
         </button>

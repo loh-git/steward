@@ -23,7 +23,7 @@ export default function Input({
   checked,
   onChange,
   placeholder,
-  className = "w-full p-2 border rounded dark:bg-zinc-800 dark:border-zinc-700",
+  className = "w-full rounded border border-ink-200 bg-paper-card p-2",
   min,
   max,
   step,
@@ -44,14 +44,14 @@ export default function Input({
           name={name}
           checked={checked ?? false}
           onChange={onChange}
-          className="mt-1 h-4 w-4 rounded border-zinc-300"
+          className="mt-1 h-4 w-4 rounded border-ink-300"
         />
         <div className="flex-1">
-          <label htmlFor={name} className="text-sm font-medium">
+          <label htmlFor={name} className="text-sm font-medium text-ink-800">
             {label}
           </label>
           {hint ? (
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            <p className="mt-0.5 text-xs text-ink-500">
               {hint}
             </p>
           ) : null}
@@ -62,7 +62,7 @@ export default function Input({
 
   return (
     <div className="flex flex-col">
-      <label htmlFor={name} className="block text-sm font-medium mb-1">
+      <label htmlFor={name} className="mb-1 block text-sm font-medium text-ink-800">
         {label}
       </label>
       <input
@@ -72,7 +72,7 @@ export default function Input({
         value={value ?? ""}
         onChange={onChange}
         placeholder={placeholder}
-        className={`${className} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+        className={`${className} focus:outline-none focus:ring-2 focus:ring-ledger-500`}
         min={min}
         max={max}
         step={resolvedStep}
@@ -80,7 +80,7 @@ export default function Input({
         pattern={pattern}
       />
       {hint ? (
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">{hint}</p>
+        <p className="mt-1 text-xs text-ink-500">{hint}</p>
       ) : null}
     </div>
   );

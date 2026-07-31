@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-30T00:00:00.000Z",
+  "title": "Design System: Steward",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Ledger Red",
+        "canonical": "#8a1f2e",
+        "tonalRamp": ["#390d13", "#52121b", "#6e1824", "#8a1f2e", "#a32638", "#c65763", "#db818a", "#e9aeb3", "#f5d6d9", "#fbeeef"]
+      },
+      "income": {
+        "role": "secondary",
+        "displayName": "Bottle Green",
+        "canonical": "#194933",
+        "tonalRamp": ["#0a1c13", "#0f2b1e", "#143a28", "#194933", "#1f5940", "#407f58", "#6ba37d", "#9cc2a8", "#cbdfd1", "#eaf1ec"]
+      },
+      "savings": {
+        "role": "tertiary",
+        "displayName": "Brass",
+        "canonical": "#7e6225",
+        "tonalRamp": ["#2b200b", "#453413", "#614a1c", "#7e6225", "#9c7a2e", "#b88e38", "#d1a952", "#e2c583", "#f0e0bc", "#faf3e4"]
+      },
+      "ink-heading": { "role": "neutral", "displayName": "Ink 900", "canonical": "#1a1714" },
+      "ink-body": { "role": "neutral", "displayName": "Ink 600", "canonical": "#6b6255" },
+      "border": { "role": "neutral", "displayName": "Ink 200", "canonical": "#d9d3c7" },
+      "canvas": { "role": "neutral", "displayName": "Paper Canvas", "canonical": "#f1ede3" },
+      "card": { "role": "neutral", "displayName": "Paper Card", "canonical": "#fffdf9" },
+      "strongroom": {
+        "role": "neutral",
+        "displayName": "Strongroom",
+        "canonical": "#17211c",
+        "tonalRamp": ["#0c120f", "#111a16", "#17211c", "#202d26", "#2c3b32", "#3d5245", "#547063", "#77998a", "#a8c4b9", "#d6e5dd"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display (Libre Caslon Text)", "purpose": "Page titles, card section titles, and the take-home hero figures only." },
+      "body": { "displayName": "Body (Public Sans)", "purpose": "All dense UI: tables, forms, badges, row amounts, labels." },
+      "label": { "displayName": "Label (Public Sans, 11px)", "purpose": "Uppercase tracked micro-labels: section headers inside planner columns, stat-tile captions, count badges." }
+    },
+    "shadows": [
+      { "name": "card-rest", "value": "0 1px 2px rgba(26,23,20,0.05)", "purpose": "Default flat card lift against the canvas." },
+      { "name": "hero-panel", "value": "0 10px 15px rgba(23,33,28,0.35)", "purpose": "The take-home strongroom panel — the one deliberately weighty surface." },
+      { "name": "modal-overlay", "value": "0 25px 50px rgba(26,23,20,0.45)", "purpose": "Month-detail modal — the strongest elevation in the system." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Dominant action button — Save, Add, Sign In.",
+      "html": "<button class=\"ds-btn-primary\">Add</button>",
+      "css": ".ds-btn-primary { background: #8a1f2e; color: #fff; padding: 8px 16px; border-radius: 4px; border: none; font-weight: 500; font-family: 'Public Sans', Arial, sans-serif; font-size: 14px; transition: background 0.15s; } .ds-btn-primary:hover { background: #6e1824; } .ds-btn-primary:focus-visible { outline: 2px solid #a32638; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "De-emphasized action — Cancel.",
+      "html": "<button class=\"ds-btn-secondary\">Cancel</button>",
+      "css": ".ds-btn-secondary { background: transparent; color: #6b6255; padding: 8px 16px; border-radius: 4px; border: 1px solid #d9d3c7; font-family: 'Public Sans', Arial, sans-serif; font-size: 14px; transition: background 0.15s; } .ds-btn-secondary:hover { background: #f7f5f2; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Standard elevated container.",
+      "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">Take-home Salary</h3><p class=\"ds-card-body\">Card content goes here.</p></div>",
+      "css": ".ds-card { background: #fffdf9; border: 1px solid #d9d3c7; border-radius: 8px; padding: 20px 24px; box-shadow: 0 1px 2px rgba(26,23,20,0.05); font-family: 'Public Sans', Arial, sans-serif; } .ds-card-title { font-family: 'Libre Caslon Text', Georgia, serif; font-weight: 700; font-size: 1.125rem; color: #1a1714; margin-bottom: 8px; } .ds-card-body { color: #6b6255; font-size: 0.875rem; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Standard form field.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-label\">Description</span><input class=\"ds-input\" placeholder=\"e.g. Rent, Groceries\" /></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 4px; font-family: 'Public Sans', Arial, sans-serif; } .ds-label { font-size: 0.875rem; font-weight: 500; color: #544c41; } .ds-input { border: 1px solid #d9d3c7; border-radius: 4px; padding: 8px 12px; font-size: 0.875rem; background: #fffdf9; color: #1a1714; } .ds-input:focus-visible { outline: none; box-shadow: 0 0 0 2px #a32638; }"
+    },
+    {
+      "name": "Category Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "Item-count stamp on a planner column header.",
+      "html": "<span class=\"ds-badge ds-badge-income\">4 Items</span>",
+      "css": ".ds-badge { border-radius: 4px; padding: 2px 8px; font-size: 10px; font-weight: 700; font-family: 'Public Sans', Arial, sans-serif; } .ds-badge-income { background: #cbdfd1; color: #143a28; } .ds-badge-outgoings { background: #f5d6d9; color: #6e1824; } .ds-badge-savings { background: #f0e0bc; color: #614a1c; }"
+    },
+    {
+      "name": "Sidebar Nav Link",
+      "kind": "nav",
+      "refersTo": "sidebar-link",
+      "description": "Navigation item inside the dark strongroom sidebar.",
+      "html": "<a class=\"ds-sidebar-link ds-sidebar-link-active\" href=\"#\"><span class=\"ds-sidebar-icon\">&#9679;</span><span><span class=\"ds-sidebar-label\">Dashboard</span><span class=\"ds-sidebar-hint\">Overview of your planner</span></span></a>",
+      "css": ".ds-sidebar-link { display: flex; align-items: flex-start; gap: 12px; border-radius: 6px; padding: 12px; text-decoration: none; transition: background 0.15s; } .ds-sidebar-link-active { background: #2c3b32; box-shadow: 0 0 0 1px rgba(163,38,56,0.4); } .ds-sidebar-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: rgba(255,255,255,0.1); color: #6ba37d; } .ds-sidebar-label { display: block; font-weight: 500; color: #fff; font-family: 'Public Sans', Arial, sans-serif; } .ds-sidebar-hint { display: block; font-size: 12px; color: rgba(255,255,255,0.5); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Working Ledger",
+    "overview": "Steward is a chartered accountant's live analysis ledger, not a museum antique. The system reads as paper that is actually being worked: hairline ruled columns, black-ink structure, and a confident red-ink accent standing in for the pen a bookkeeper reaches for when something needs attention — a correction, a total, a call to action. Vintage character comes from ruling, ink color, and letterform, never from yellowed paper, gold leaf, or faux distressing. The working surface stays a crisp, barely-warm paper white so it never tires the eye across long sessions of budgeting. This replaced an earlier generic-SaaS violet system that the product owner explicitly flagged as reading \"AI-coded.\" The Working Ledger was chosen deliberately against that failure mode: it commits to a real, citable material world (double-entry bookkeeping, banknote engraving, ledger stamps) rather than a default startup palette, and it avoids the equally predictable \"vintage ledger\" cliché of honeyed cream paper and decorative gold serif type.",
+    "keyCharacteristics": [
+      "Three ink colors do real semantic work: ledger red (outgoings, corrections, primary actions), bottle green (income), brass (savings) — never decorative, always meaningful.",
+      "A dark \"strongroom\" surface (not navy-tech-dashboard, but ink-black with a whisper of green) is reserved for the two places money matters most: the take-home hero panel and the persistent sidebar.",
+      "Corners are crisp, not soft — a hairline-and-rule vocabulary stands in for the rounded-pill SaaS default.",
+      "Display type (Libre Caslon Text) appears only at headings and hero figures; dense data stays in a disciplined workhorse sans (Public Sans) for legibility."
+    ],
+    "rules": [
+      { "name": "The Double-Duty Red Rule", "body": "Ledger red is both the primary interactive accent and the outgoings/negative semantic color — never two separate reds. This mirrors how a real ledger's red ink means both \"pay attention\" and \"this is a debit.\"", "section": "colors" },
+      { "name": "The No-Cream Rule", "body": "No background in the system uses a honeyed/golden cream tone. Vintage character comes from ruling, ink, and type, never from paper tint.", "section": "colors" },
+      { "name": "The Ceremony-Only Rule", "body": "Display type is reserved for headings and hero figures. Dense tabular data always stays in the body sans for legibility at small sizes.", "section": "typography" },
+      { "name": "The Earned-Shadow Rule", "body": "A surface's shadow weight should track its importance: flat by default, shadow-lg for the one hero figure on the page, shadow-2xl reserved for modal overlays.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use ledger red for both the primary interactive accent and the outgoings/negative semantic meaning — they're the same color on purpose.",
+      "Do reserve Libre Caslon Text for headings and hero figures only; keep dense data in Public Sans.",
+      "Do keep the paper canvas/card neutrals warm but restrained — never honeyed cream, never cool slate-grey.",
+      "Do use the strongroom dark surface only for the sidebar and the take-home panel; it's a signature device, not a general dark-mode."
+    ],
+    "donts": [
+      "Don't reintroduce violet, or any generic SaaS purple/indigo accent — it's the exact identity this system replaced.",
+      "Don't use honeyed cream, parchment, or gold-leaf tones anywhere — the vintage character comes from ruling and ink, not paper tint.",
+      "Don't default to dark mode for ordinary surfaces; dark stays confined to the two strongroom surfaces.",
+      "Don't use rounded-full on buttons or tags — reserve full rounding for genuinely circular icon containers."
+    ]
+  }
+}

@@ -27,21 +27,24 @@ export default async function Home() {
 
   // Render simple register/login page
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+    <div className="flex flex-1 flex-col items-center justify-center bg-paper-canvas font-sans">
       <>
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+        <h1 className="font-display text-4xl font-bold text-ink-900">
           Welcome to Steward!
         </h1>
-        <div className="mt-6 flex gap-4 col-2">
+        <p className="mt-2 text-sm text-ink-500">
+          UK take-home pay, budgeted properly.
+        </p>
+        <div className="col-2 mt-6 flex gap-4">
           <Link
             href="/auth/register"
-            className="px-4 py-2 bg-white border-blue-500 border-1 text-blue-500 rounded"
+            className="rounded border border-ledger-500 bg-paper-card px-4 py-2 text-ledger-600 hover:bg-ledger-50"
           >
             Sign Up
           </Link>
           <Link
             href="/auth/login"
-            className="px-4 py-2 bg-blue-600 text-white rounded"
+            className="rounded bg-ledger-600 px-4 py-2 text-white hover:bg-ledger-700"
           >
             Log In
           </Link>

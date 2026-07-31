@@ -1,28 +1,75 @@
-/* Overriding CSS rules that apply to the entire application */
+/* Steward design system: "The Working Ledger" — see DESIGN.md.
+   A chartered accountant's live analysis ledger: black ink structure, a
+   confident red-ink accent for actions/outgoings, bottle green for income,
+   brass for savings. Vintage carried by ruling, ink, and type — not by
+   honeyed cream paper or gold leaf. */
 
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --font-display: var(--font-caslon);
+  --font-sans: var(--font-public-sans);
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Ledger red — primary accent, actions, outgoings/negative */
+  --color-ledger-50: #fbeeef;
+  --color-ledger-100: #f5d6d9;
+  --color-ledger-200: #e9aeb3;
+  --color-ledger-300: #db818a;
+  --color-ledger-400: #c65763;
+  --color-ledger-500: #a32638;
+  --color-ledger-600: #8a1f2e;
+  --color-ledger-700: #6e1824;
+  --color-ledger-800: #52121b;
+  --color-ledger-900: #390d13;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Bottle green — income/positive */
+  --color-bottle-50: #eaf1ec;
+  --color-bottle-100: #cbdfd1;
+  --color-bottle-200: #9cc2a8;
+  --color-bottle-300: #6ba37d;
+  --color-bottle-400: #407f58;
+  --color-bottle-500: #1f5940;
+  --color-bottle-600: #194933;
+  --color-bottle-700: #143a28;
+  --color-bottle-800: #0f2b1e;
+  --color-bottle-900: #0a1c13;
+
+  /* Brass — savings */
+  --color-brass-50: #faf3e4;
+  --color-brass-100: #f0e0bc;
+  --color-brass-200: #e2c583;
+  --color-brass-300: #d1a952;
+  --color-brass-400: #b88e38;
+  --color-brass-500: #9c7a2e;
+  --color-brass-600: #7e6225;
+  --color-brass-700: #614a1c;
+  --color-brass-800: #453413;
+  --color-brass-900: #2b200b;
+
+  /* Ink — warm neutral text/structure scale (replaces slate) */
+  --color-ink-50: #f7f5f2;
+  --color-ink-100: #ede8de;
+  --color-ink-200: #d9d3c7;
+  --color-ink-300: #bfb6a4;
+  --color-ink-400: #978c77;
+  --color-ink-500: #786d5c;
+  --color-ink-600: #6b6255;
+  --color-ink-700: #544c41;
+  --color-ink-800: #362f27;
+  --color-ink-900: #1a1714;
+
+  /* Paper — canvas/surface neutrals */
+  --color-paper-canvas: #f1ede3;
+  --color-paper-card: #fffdf9;
+
+  /* Strongroom — the dark elevated surface (sidebar, take-home hero panel) */
+  --color-strongroom-900: #17211c;
+  --color-strongroom-700: #202d26;
+  --color-strongroom-500: #2c3b32;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper-canvas);
+  color: var(--color-ink-900);
+  font-family: var(--font-sans);
 }

@@ -28,18 +28,18 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-50 dark:bg-black">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-paper-canvas">
+      <h1 className="mb-6 font-display text-3xl font-bold text-ink-900">
         Sign In
       </h1>
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white dark:bg-zinc-900 p-8 rounded-lg shadow"
+        className="w-full max-w-sm rounded-lg border border-ink-200 bg-paper-card p-8 shadow-sm"
       >
         <div className="mb-4">
           <label
             htmlFor="email"
-            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            className="mb-2 block text-sm font-bold text-ink-700"
           >
             Email
           </label>
@@ -49,14 +49,14 @@ export default function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full p-2 border rounded dark:bg-zinc-800"
+            className="w-full rounded border border-ink-200 p-2"
             placeholder="you@example.com"
           />
         </div>
         <div className="mb-6">
           <label
             htmlFor="password"
-            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            className="mb-2 block text-sm font-bold text-ink-700"
           >
             Password
           </label>
@@ -66,27 +66,27 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full p-2 border rounded dark:bg-zinc-800"
+            className="w-full rounded border border-ink-200 p-2"
             placeholder="••••••••"
           />
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+          className="w-full rounded bg-ledger-600 px-4 py-2 text-white hover:bg-ledger-700 disabled:opacity-50"
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
-        <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-4 text-center text-sm text-ink-600">
           Don&apos;t have an account?{" "}
-          <Link href="/auth/register" className="text-blue-600 hover:underline">
+          <Link href="/auth/register" className="text-ledger-600 hover:underline">
             Sign up
           </Link>
         </p>
-        <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-2 text-center text-sm text-ink-600">
           <Link
             href="/auth/reset-password"
-            className="text-blue-600 hover:underline"
+            className="text-ledger-600 hover:underline"
           >
             Forgotten Password?
           </Link>

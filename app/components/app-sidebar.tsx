@@ -21,7 +21,7 @@ export default function AppSidebar() {
   return (
     <>
       <div
-        className={`fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-[2px] transition-opacity duration-300 ${
+        className={`fixed inset-0 z-40 bg-ink-900/50 backdrop-blur-[2px] transition-opacity duration-300 ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={close}
@@ -29,17 +29,17 @@ export default function AppSidebar() {
       />
 
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-full w-72 flex-col border-r border-[#2a3560] bg-[#1e2a4a] shadow-xl transition-transform duration-300 ease-out ${
+        className={`fixed left-0 top-0 z-50 flex h-full w-72 flex-col border-r border-strongroom-500 bg-strongroom-900 shadow-xl transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
         aria-hidden={!open}
       >
-        <div className="flex items-center justify-between border-b border-[#2a3560] px-5 py-4">
-          <span className="text-lg font-bold text-emerald-400">Steward</span>
+        <div className="flex items-center justify-between border-b border-strongroom-500 px-5 py-4">
+          <span className="font-display text-lg font-bold text-brass-300">Steward</span>
           <button
             type="button"
             onClick={close}
-            className="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-emerald-300"
+            className="rounded-md p-1.5 text-white/50 transition hover:bg-white/10 hover:text-ledger-300"
             aria-label="Close menu"
           >
             <CloseIcon />
@@ -49,7 +49,7 @@ export default function AppSidebar() {
         <nav className="flex flex-1 flex-col gap-1 p-4">
           <SidebarLink
             href="/dashboard"
-            icon={<ChartIcon className="text-emerald-400" />}
+            icon={<ChartIcon className="text-bottle-400" />}
             label="Dashboard"
             hint="Overview of your planner"
             active={pathname === "/dashboard" || pathname.startsWith("/dashboard")}
@@ -57,7 +57,7 @@ export default function AppSidebar() {
           />
           <SidebarLink
             href="/expenses"
-            icon={<ReceiptIcon className="text-rose-400" />}
+            icon={<ReceiptIcon className="text-ledger-400" />}
             label="Expenses"
             hint="Recurring monthly outgoings"
             active={pathname === "/expenses"}
@@ -65,7 +65,7 @@ export default function AppSidebar() {
           />
           <SidebarLink
             href="/savings"
-            icon={<PiggyBankIcon className="text-violet-400" />}
+            icon={<PiggyBankIcon className="text-brass-400" />}
             label="Savings"
             hint="Monthly savings goals"
             active={pathname === "/savings"}
@@ -73,7 +73,7 @@ export default function AppSidebar() {
           />
           <SidebarLink
             href="/compare"
-            icon={<GridViewIcon className="text-sky-400" />}
+            icon={<GridViewIcon className="text-white/70" />}
             label="Compare"
             hint="Line items across the year"
             active={pathname === "/compare"}
@@ -81,7 +81,7 @@ export default function AppSidebar() {
           />
           <SidebarLink
             href="/settings"
-            icon={<SettingsIcon className="text-slate-300" />}
+            icon={<SettingsIcon className="text-white/50" />}
             label="Settings"
             hint="Edit user & financial information"
             active={pathname === "/settings"}
@@ -112,18 +112,18 @@ function SidebarLink({
     <Link
       href={href}
       onClick={onNavigate}
-      className={`flex items-start gap-3 rounded-xl px-3 py-3 transition ${
+      className={`flex items-start gap-3 rounded-md px-3 py-3 transition ${
         active
-          ? "bg-[#2a3560] ring-1 ring-emerald-500/30"
-          : "hover:bg-[#2a3560]/60"
+          ? "bg-strongroom-500 ring-1 ring-ledger-400/40"
+          : "hover:bg-strongroom-500/60"
       }`}
     >
-      <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10">
+      <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white/10">
         {icon}
       </span>
       <span>
-        <span className="block font-medium text-emerald-300">{label}</span>
-        <span className="block text-xs text-slate-400">{hint}</span>
+        <span className="block font-medium text-white">{label}</span>
+        <span className="block text-xs text-white/50">{hint}</span>
       </span>
     </Link>
   );

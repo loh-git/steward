@@ -8,13 +8,13 @@ export default function ItemCountBadge({
   color: "green" | "pink" | "purple";
 }) {
   const styles = {
-    green: "bg-emerald-100 text-emerald-700",
-    pink: "bg-rose-100 text-rose-700",
-    purple: "bg-violet-100 text-violet-700",
+    green: "bg-bottle-100 text-bottle-700",
+    pink: "bg-ledger-100 text-ledger-700",
+    purple: "bg-brass-100 text-brass-700",
   };
   return (
     <span
-      className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${styles[color]}`}
+      className={`rounded px-2 py-0.5 text-[11px] font-bold ${styles[color]}`}
     >
       {count} Items
     </span>

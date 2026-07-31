@@ -32,9 +32,9 @@ export default function ExpensesClient({
     <RecurringBudgetPage
       title="Recurring Expenses"
       description="Predicted monthly outgoings like rent and groceries. These pre-fill each month's outgoings in your planner."
-      icon={<ReceiptIcon className="text-rose-500" />}
-      accentClass="bg-rose-100"
-      buttonClass="bg-rose-500 hover:bg-rose-600"
+      icon={<ReceiptIcon className="text-ledger-700" />}
+      accentClass="bg-ledger-100"
+      buttonClass="bg-ledger-600 hover:bg-ledger-700"
       items={items}
       onAdd={async (values: RecurringFormValues) => {
         const res = await fetch("/api/recurring-expenses", {

@@ -25,7 +25,7 @@ export default function Select({
         name={name}
         value={value}
         onChange={onChange}
-        className="w-full p-2 border rounded dark:bg-zinc-800 dark:border-zinc-700"
+        className="w-full rounded border border-ink-200 bg-paper-card p-2"
       >
         {options.map((opt) => (
           <option key={String(opt.value)} value={opt.value}>
@@ -34,7 +34,7 @@ export default function Select({
         ))}
       </select>
       {hint ? (
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">{hint}</p>
+        <p className="mt-0.5 text-xs text-ink-500">{hint}</p>
       ) : null}
     </div>
   );

@@ -160,17 +160,17 @@ export default function SetupForm({ initialData, userId }: SetupFormProps) {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black p-8">
+    <div className="min-h-screen bg-paper-canvas p-8">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="mb-2 font-display text-3xl font-bold text-ink-900">
           Financial Profile Setup
         </h1>
-        <p className="text-zinc-600 dark:text-zinc-400 mb-1">
+        <p className="mb-1 text-ink-600">
           Welcome to Steward. Tell us about your pay so we can estimate your
           monthly take-home — similar to{" "}
           <a
             href="https://www.thesalarycalculator.co.uk/salary.php"
-            className="text-blue-600 hover:underline"
+            className="text-ledger-600 hover:underline"
             target="_blank"
             rel="noreferrer"
           >
@@ -178,14 +178,14 @@ export default function SetupForm({ initialData, userId }: SetupFormProps) {
           </a>
           .
         </p>
-        <p className="text-zinc-600 dark:text-zinc-400 mb-8">
+        <p className="mb-8 text-ink-600">
           Fields mirror UK income tax, National Insurance, pension, and student
           loan inputs for the selected tax year. Your profile is saved to your
           account when you continue.
         </p>
 
         {error ? (
-          <p className="mb-4 rounded border border-red-300 bg-red-50 px-4 py-2 text-sm text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200">
+          <p className="mb-4 rounded border border-ledger-300 bg-ledger-50 px-4 py-2 text-sm text-ledger-800">
             {error}
           </p>
         ) : null}
@@ -267,7 +267,7 @@ export default function SetupForm({ initialData, userId }: SetupFormProps) {
                 hint="Enter just the day number, for example 28. Do not use 28th or 28/01/2026. Weekend dates roll back to the previous weekday."
               />
               {payDateError ? (
-                <p className="text-sm text-red-600 dark:text-red-400">
+                <p className="text-sm text-ledger-600">
                   {payDateError}
                 </p>
               ) : null}
@@ -294,7 +294,7 @@ export default function SetupForm({ initialData, userId }: SetupFormProps) {
           </Section>
 
           <Section title="Student loans">
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+            <p className="mb-4 text-sm text-ink-600">
               Tick every repayment plan that applies to you.
             </p>
             <div className="space-y-3">
@@ -590,11 +590,11 @@ export default function SetupForm({ initialData, userId }: SetupFormProps) {
             />
           </Section>
 
-          <details className="rounded-lg border border-zinc-200 dark:border-zinc-800">
-            <summary className="cursor-pointer px-4 py-3 text-sm font-medium">
+          <details className="rounded-lg border border-ink-200">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-ink-800">
               Preview calculation payload
             </summary>
-            <pre className="overflow-x-auto px-4 pb-4 text-xs text-zinc-600 dark:text-zinc-400">
+            <pre className="overflow-x-auto px-4 pb-4 text-xs text-ink-600">
               {JSON.stringify(formData, null, 2)}
             </pre>
           </details>
@@ -602,7 +602,7 @@ export default function SetupForm({ initialData, userId }: SetupFormProps) {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-3 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-60"
+            className="w-full rounded bg-ledger-600 py-3 text-white hover:bg-ledger-700 disabled:opacity-60"
           >
             {submitting ? "Saving…" : "Save & continue"}
           </button>

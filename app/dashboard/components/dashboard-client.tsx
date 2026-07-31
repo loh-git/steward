@@ -148,20 +148,20 @@ export default function DashboardClient({
         saveError={saveError}
       />
 
-      <div className="min-h-screen bg-[#eef1f6] px-4 py-8 sm:px-8">
+      <div className="min-h-screen bg-paper-canvas px-4 py-8 sm:px-8">
         <div className="mx-auto max-w-6xl">
           <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">
+              <h1 className="font-display text-3xl font-bold text-ink-900">
                 Welcome back, {firstName}!
               </h1>
-              <p className="mt-1 max-w-xl text-sm text-slate-500">
+              <p className="mt-1 max-w-xl text-sm text-ink-600">
                 Ditch messy spreadsheets. Manage your tax codes, pension
-                contributions, and monthly expenditures in a clean bento board.
+                contributions, and monthly expenditures — properly ledgered.
               </p>
             </div>
 
-            <div className="flex shrink-0 rounded-full border border-slate-200 bg-white p-1 shadow-sm">
+            <div className="flex shrink-0 rounded-md border border-ink-200 bg-paper-card p-1 shadow-sm">
               <ViewToggle
                 active={view === "yearly"}
                 onClick={() => setView("yearly")}
@@ -178,7 +178,7 @@ export default function DashboardClient({
           </header>
 
           {saveError ? (
-            <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
+            <p className="mb-4 rounded-md border border-ledger-200 bg-ledger-50 px-4 py-2 text-sm text-ledger-700">
               {saveError}
             </p>
           ) : null}
@@ -238,10 +238,10 @@ function ViewToggle({
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
+      className={`inline-flex items-center gap-2 rounded px-4 py-2 text-sm font-medium transition ${
         active
-          ? "bg-white text-violet-700 shadow-sm"
-          : "text-slate-500 hover:text-slate-700"
+          ? "bg-paper-card text-ledger-700 shadow-sm"
+          : "text-ink-500 hover:text-ink-700"
       }`}
     >
       {icon}

@@ -1,7 +1,7 @@
 export default function Section({
   title,
   children,
-  classes = "bg-white dark:bg-zinc-900 p-6 rounded-lg shadow",
+  classes = "bg-paper-card border border-ink-200 p-6 rounded-lg shadow-sm",
 }: {
   title: string;
   children: React.ReactNode;
@@ -9,7 +9,9 @@ export default function Section({
 }) {
   return (
     <section className={classes}>
-      <h2 className="text-xl font-semibold mb-4">{title}</h2>
+      <h2 className="mb-4 font-display text-xl font-semibold text-ink-900">
+        {title}
+      </h2>
       {children}
     </section>
   );

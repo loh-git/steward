@@ -25,10 +25,10 @@ export type TrendPoint = {
 type SeriesKey = "income" | "outgoings" | "savings" | "remaining";
 
 const SERIES: { key: SeriesKey; label: string; color: string }[] = [
-  { key: "income", label: "Income", color: "#059669" },
-  { key: "outgoings", label: "Outgoings", color: "#f43f5e" },
-  { key: "savings", label: "Savings", color: "#7c3aed" },
-  { key: "remaining", label: "Remaining", color: "#000000" },
+  { key: "income", label: "Income", color: "#1f5940" },
+  { key: "outgoings", label: "Outgoings", color: "#a32638" },
+  { key: "savings", label: "Savings", color: "#9c7a2e" },
+  { key: "remaining", label: "Remaining", color: "#1a1714" },
 ];
 
 export default function FinanceTrendChart({
@@ -52,15 +52,15 @@ export default function FinanceTrendChart({
   };
 
   return (
-    <div className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="flex h-full flex-col rounded-lg border border-ink-200 bg-paper-card p-6 shadow-sm">
       <div className="mb-4 flex items-start justify-between gap-3">
-        <div className="flex items-center gap-2 text-slate-800">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-100 text-violet-700">
+        <div className="flex items-center gap-2 text-ink-800">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ledger-100 text-ledger-700">
             <ChartIcon />
           </span>
           <div>
-            <h2 className="text-lg font-semibold">Income, Outgoings &amp; Savings</h2>
-            <p className="text-xs text-slate-500">{subtitle}</p>
+            <h2 className="font-display text-lg font-semibold">Income, Outgoings &amp; Savings</h2>
+            <p className="text-xs text-ink-500">{subtitle}</p>
           </div>
         </div>
       </div>
@@ -68,10 +68,10 @@ export default function FinanceTrendChart({
       <div className="min-h-[220px] flex-1">
         <ResponsiveContainer width="100%" height="100%" minHeight={220}>
           <LineChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#64748b" }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#d9d3c7" />
+            <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#786d5c" }} />
             <YAxis
-              tick={{ fontSize: 12, fill: "#64748b" }}
+              tick={{ fontSize: 12, fill: "#786d5c" }}
               tickFormatter={(value: number) => formatGBP(value)}
               width={72}
             />
