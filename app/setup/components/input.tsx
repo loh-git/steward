@@ -1,3 +1,5 @@
+import Tooltip from "./tooltip";
+
 type InputProps = {
   label: string;
   type: string;
@@ -13,6 +15,7 @@ type InputProps = {
   hint?: string;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
   pattern?: string;
+  tooltip?: string;
 };
 
 export default function Input({
@@ -30,6 +33,7 @@ export default function Input({
   hint,
   inputMode,
   pattern,
+  tooltip,
 }: InputProps) {
   const isCheckbox = type === "checkbox";
   const isNumberInput = type === "number";
@@ -47,9 +51,12 @@ export default function Input({
           className="mt-1 h-4 w-4 rounded border-ink-300"
         />
         <div className="flex-1">
-          <label htmlFor={name} className="text-sm font-medium text-ink-800">
-            {label}
-          </label>
+          <div className="flex items-center gap-1.5">
+            <label htmlFor={name} className="text-sm font-medium text-ink-800">
+              {label}
+            </label>
+            {tooltip ? <Tooltip text={tooltip} /> : null}
+          </div>
           {hint ? (
             <p className="mt-0.5 text-xs text-ink-500">
               {hint}

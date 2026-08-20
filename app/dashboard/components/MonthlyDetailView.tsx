@@ -40,7 +40,7 @@ import ItemCountBadge from "@/app/components/ItemCountBadge";
 type MonthlyDetailViewProps = {
   year: number;
   resolveEntry: (year: number, month: number) => MonthlyEntry;
-  baseNetMonthly: number;
+  getBaseNetMonthly: (year: number, month: number) => number;
   selectedMonth: number;
   onMonthChange: (month: number) => void;
   onSaveMonth: (entry: MonthlyEntry) => Promise<void>;
@@ -55,7 +55,7 @@ type RowVariant = "income" | "expense" | "savings";
 export default function MonthlyDetailView({
   year,
   resolveEntry,
-  baseNetMonthly,
+  getBaseNetMonthly,
   selectedMonth,
   onMonthChange,
   onSaveMonth,
@@ -66,11 +66,10 @@ export default function MonthlyDetailView({
   useEffect(() => {
     console.log("Debug info: ");
     console.log(`Year: ${year}`);
-    console.log(`baseNetMonthly: ${baseNetMonthly}`);
     console.log(`selectedMonth: ${selectedMonth}`);
     console.log(`savingsGoals: ${JSON.stringify(savingsGoals, null, 2)}`);
     console.log(`allowSavingsAdd: ${allowSavingsAdd}`);
-  }, [year, baseNetMonthly, selectedMonth, savingsGoals, allowSavingsAdd]);
+  }, [year, selectedMonth, savingsGoals, allowSavingsAdd]);
 
   const entry = resolveEntry(year, selectedMonth);
   // useEffect(() => {
@@ -101,6 +100,7 @@ export default function MonthlyDetailView({
     setEditingKey(null);
   }, [entry.year, entry.month]);
 
+  const baseNetMonthly = getBaseNetMonthly(entry.year, entry.month);
   const { totalIncome, totalOutgoings, totalSavings, remaining, baseIncome } =
     summariseMonth(entry, baseNetMonthly);
 
@@ -165,7 +165,29 @@ export default function MonthlyDetailView({
   // Clears the per-month override so baseIncome falls back to the calculated
   // default (baseNetMonthly) again, rather than freezing it at today's default value.
   async function resetSalary() {
-    await persist({ ...entry, takeHomeSalary: null }, "incomes");
+    await persist(
+      { ...entry, takeHomeSalary: null, takeHomeSalaryNote: null },
+      "incomes",
+    );
+  }
+
+  const [adjustmentAmount, setAdjustmentAmount] = useState("");
+  const [adjustmentReason, setAdjustmentReason] = useState("");
+
+  async function applyQuickAdjustment() {
+    const delta = Number(adjustmentAmount);
+    if (!Number.isFinite(delta) || delta === 0) return;
+    const newAmount = (entry.takeHomeSalary ?? baseIncome) + delta;
+    await persist(
+      {
+        ...entry,
+        takeHomeSalary: newAmount,
+        takeHomeSalaryNote: adjustmentReason.trim() || null,
+      },
+      "incomes",
+    );
+    setAdjustmentAmount("");
+    setAdjustmentReason("");
   }
 
   async function addOrUpdateSavingsGoal(goalId: string, amount: number) {
@@ -429,13 +451,49 @@ export default function MonthlyDetailView({
               label="Take-home Salary"
               amount={baseIncome}
               variant="income"
-              // sublabel={`Default ${formatGBP(baseNetMonthly)} from profile`}
+              sublabel={
+                entry.takeHomeSalaryNote
+                  ? `${entry.takeHomeSalaryNote} · default ${formatGBP(baseNetMonthly)}`
+                  : entry.takeHomeSalary != null
+                    ? `Adjusted this month · default ${formatGBP(baseNetMonthly)}`
+                    : "Calculated from your profile"
+              }
               labelFixed
               editingKey={editingKey}
               onEdit={setEditingKey}
               onSave={async (_label, amount) => saveSalary(amount)}
               disabled={savingIncomes}
             />
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <input
+                value={adjustmentAmount}
+                onChange={(e) => setAdjustmentAmount(e.target.value)}
+                placeholder="+150 or -40"
+                inputMode="decimal"
+                disabled={savingIncomes}
+                className="w-24 rounded border border-ink-200 bg-paper-card px-2 py-1 text-xs"
+              />
+              <input
+                value={adjustmentReason}
+                onChange={(e) => setAdjustmentReason(e.target.value)}
+                placeholder="Reason (e.g. Bonus)"
+                disabled={savingIncomes}
+                className="w-36 rounded border border-ink-200 bg-paper-card px-2 py-1 text-xs"
+              />
+              <button
+                type="button"
+                onClick={applyQuickAdjustment}
+                disabled={
+                  savingIncomes ||
+                  !adjustmentAmount ||
+                  !Number.isFinite(Number(adjustmentAmount)) ||
+                  Number(adjustmentAmount) === 0
+                }
+                className="rounded border border-ink-200 px-2 py-1 text-xs font-medium text-ink-700 hover:bg-ink-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Apply
+              </button>
+            </div>
           </div>
           {manualIncomes.length > 0 ? (
             <div className="space-y-2">

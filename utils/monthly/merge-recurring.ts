@@ -14,6 +14,13 @@ export function monthIndex(year: number, month: number): number {
   return year * 12 + month;
 }
 
+// Inverse of monthIndex — converts a comparable month index back to a year/month pair.
+export function monthIndexToYearMonth(idx: number): { year: number; month: number } {
+  const year = Math.floor((idx - 1) / 12);
+  const month = idx - year * 12;
+  return { year, month };
+}
+
 // Function to check if an savings goal/expenditure applies to a given month
 // Used to filter recurring expenses and savings goals to the current month
 export function appliesToMonth(
@@ -29,6 +36,11 @@ export function appliesToMonth(
     endsUntilMonth: number | null;
     // When this savings goal/expenditure was created
     createdAt: string;
+    // Recurs every N months, anchored to the start month worked out below.
+    // Optional — savings goals don't have this concept, only recurring
+    // expenses do, so it's left undefined for anything that doesn't set it,
+    // which behaves exactly like 1 (every month, today's existing behaviour).
+    intervalMonths?: number;
   },
   // The year of entry (month we're operating on) (we're looking at July 2026, this value will be 2026 (number)) TODO: this seems inefficient
   year: number,
@@ -56,6 +68,14 @@ export function appliesToMonth(
   // If it was target July 2026 and start was August 2026 then (24319 < 24320 ? Yes, August is after July #
   // so we will return false here and show that this savings goal/expenditure does NOT apply to this month)
   if (target < start) return false;
+
+  // Every-N-months check: only months that land exactly on the interval
+  // (counted in whole months from `start`) actually apply. An interval of 1
+  // (or unset) always passes here since anything mod 1 is 0 — every month.
+  const intervalMonths = item.intervalMonths && item.intervalMonths > 1 ? item.intervalMonths : 1;
+  if (intervalMonths > 1 && (target - start) % intervalMonths !== 0) {
+    return false;
+  }
 
   // In the case of the first example, July 2026 is after March 2025 so we reach this section.
   // Then we check does this item have an explicit end year and end month?

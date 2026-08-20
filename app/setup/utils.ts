@@ -113,7 +113,7 @@ export function createInitialPayload(id: string): FinancialProfilePayload {
         type: "percentage",
         value: 0,
         scheme: "auto-enrolment",
-        basedOnQualifyingEarnings: true,
+        basedOnQualifyingEarnings: false,
         includeOvertime: false,
         includeBonus: false,
         includeCashAllowances: false,

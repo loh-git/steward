@@ -15,6 +15,9 @@ export const MONTH_NAMES = [
 ] as const;
 
 // An user-created entry for a month, can be income, expense, savings
+// TODO (low priority): consider a free-text note field on line items, similar to
+// MonthlyEntry.takeHomeSalaryNote, so a user can record why a particular expense
+// looked the way it did that month.
 export type BudgetLineItem = {
   id: string;
   label: string;
@@ -32,6 +35,8 @@ export type MonthlyEntry = {
   month: number;
   /** Overrides calculated take-home for this month when set. */
   takeHomeSalary?: number | null;
+  /** Optional short note explaining why takeHomeSalary was overridden this month. */
+  takeHomeSalaryNote?: string | null;
   incomes: BudgetLineItem[];
   expenditures: BudgetLineItem[];
   savings: BudgetLineItem[];

@@ -8,6 +8,7 @@ function rowToExpense(row: Record<string, unknown>): RecurringExpense {
     id: String(row.id),
     label: String(row.label),
     amount: Number(row.amount),
+    intervalMonths: row.interval_months != null ? Number(row.interval_months) : 1,
     startsFromYear:
       row.starts_from_year != null ? Number(row.starts_from_year) : null,
     startsFromMonth:
@@ -66,6 +67,7 @@ export async function POST(req: Request) {
       user_id: userId,
       label: body.label,
       amount: Number(body.amount),
+      interval_months: body.intervalMonths && body.intervalMonths > 1 ? Number(body.intervalMonths) : 1,
       starts_from_year: body.startsFromYear ?? null,
       starts_from_month: body.startsFromMonth ?? null,
       ends_until_year: body.endsUntilYear ?? null,
@@ -97,6 +99,7 @@ export async function PUT(req: Request) {
     .update({
       label: body.label,
       amount: Number(body.amount),
+      interval_months: body.intervalMonths && body.intervalMonths > 1 ? Number(body.intervalMonths) : 1,
       starts_from_year: body.startsFromYear ?? null,
       starts_from_month: body.startsFromMonth ?? null,
       ends_until_year: body.endsUntilYear ?? null,

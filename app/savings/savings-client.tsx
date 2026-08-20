@@ -9,11 +9,14 @@ import {
   type RecurringFormValues,
 } from "@/app/components/recurring-budget-page";
 import type { SavingsGoal } from "@/types/savingsGoals";
+import type { MonthlyEntry } from "@/types/monthlyPlan";
 
 export default function SavingsClient({
   initialItems,
+  initialMonthlyEntries,
 }: {
   initialItems: SavingsGoal[];
+  initialMonthlyEntries: MonthlyEntry[];
 }) {
   const router = useRouter();
   const [items, setItems] = useState(initialItems);
@@ -36,6 +39,7 @@ export default function SavingsClient({
       buttonClass="bg-brass-600 hover:bg-brass-700"
       showSavingsFields
       items={items}
+      monthlyEntries={initialMonthlyEntries}
       onAdd={async (values: RecurringFormValues) => {
         const res = await fetch("/api/savings-goals", {
           method: "POST",

@@ -44,6 +44,10 @@ export async function POST(req: Request) {
     month: body.month,
     takeHomeSalary:
       body.takeHomeSalary != null ? Number(body.takeHomeSalary) : null,
+    takeHomeSalaryNote:
+      typeof body.takeHomeSalaryNote === "string" && body.takeHomeSalaryNote.trim()
+        ? body.takeHomeSalaryNote.trim()
+        : null,
     incomes: parseItems(body.incomes),
     expenditures: parseItems(body.expenditures),
     savings: parseItems(body.savings),
@@ -57,6 +61,7 @@ export async function POST(req: Request) {
       year: toStore.year,
       month: toStore.month,
       take_home_salary: toStore.takeHomeSalary ?? null,
+      take_home_salary_note: toStore.takeHomeSalaryNote ?? null,
       incomes: toStore.incomes,
       expenditures: toStore.expenditures,
       savings: toStore.savings,

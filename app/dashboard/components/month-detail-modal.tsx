@@ -13,7 +13,7 @@ type MonthDetailModalProps = {
   year: number;
   month: number | null;
   resolveEntry: (year: number, month: number) => MonthlyEntry;
-  baseNetMonthly: number;
+  getBaseNetMonthly: (year: number, month: number) => number;
   onClose: () => void;
   onSaveMonth: (entry: MonthlyEntry) => Promise<void>;
   savingsGoals: SavingsGoal[];
@@ -26,7 +26,7 @@ export default function MonthDetailModal({
   year,
   month,
   resolveEntry,
-  baseNetMonthly,
+  getBaseNetMonthly,
   onClose,
   onSaveMonth,
   savingsGoals,
@@ -121,7 +121,7 @@ export default function MonthDetailModal({
           <MonthlyDetailView
             year={year}
             resolveEntry={resolveEntry}
-            baseNetMonthly={baseNetMonthly}
+            getBaseNetMonthly={getBaseNetMonthly}
             selectedMonth={selectedMonth}
             onMonthChange={setSelectedMonth}
             onSaveMonth={onSaveMonth}

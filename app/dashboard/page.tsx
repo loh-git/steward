@@ -4,12 +4,13 @@ import { redirect } from "next/navigation";
 import { loadFinancialProfile } from "@/utils/supabase/financial-profile";
 import { createClient } from "@/utils/supabase/server";
 import {
-  calculateTakeHome,
+  calculateTakeHomeForMonth,
   getAdjustedPayDateForMonth,
 } from "@/utils/take-home/calculate";
 import type { MonthlyEntry } from "@/types/monthlyPlan";
 import type { SavingsGoal } from "@/types/savingsGoals";
 import { RecurringExpense } from "@/types/recurringExpenses";
+import type { SalaryChange } from "@/types/salaryHistory";
 import DashboardClient from "./components/dashboard-client";
 
 function parseAllMonthlyRows(
@@ -17,6 +18,7 @@ function parseAllMonthlyRows(
     year: number;
     month: number;
     take_home_salary?: number | null;
+    take_home_salary_note?: string | null;
     incomes?: unknown;
     expenditures?: unknown;
     savings?: unknown;
@@ -27,6 +29,7 @@ function parseAllMonthlyRows(
     month: row.month,
     takeHomeSalary:
       row.take_home_salary != null ? Number(row.take_home_salary) : null,
+    takeHomeSalaryNote: row.take_home_salary_note ?? null,
     incomes: Array.isArray(row.incomes) ? row.incomes : [],
     expenditures: Array.isArray(row.expenditures) ? row.expenditures : [],
     savings: Array.isArray(row.savings) ? row.savings : [],
@@ -38,6 +41,7 @@ function mapRecurring(row: Record<string, unknown>): RecurringExpense {
     id: String(row.id),
     label: String(row.label),
     amount: Number(row.amount),
+    intervalMonths: row.interval_months != null ? Number(row.interval_months) : 1,
     startsFromYear:
       row.starts_from_year != null ? Number(row.starts_from_year) : null,
     startsFromMonth:
@@ -46,6 +50,22 @@ function mapRecurring(row: Record<string, unknown>): RecurringExpense {
       row.ends_until_year != null ? Number(row.ends_until_year) : null,
     endsUntilMonth:
       row.ends_until_month != null ? Number(row.ends_until_month) : null,
+    createdAt: String(row.created_at),
+  };
+}
+
+function mapSalaryChange(row: Record<string, unknown>): SalaryChange {
+  return {
+    id: String(row.id),
+    annualIncome: Number(row.annual_income),
+    taxCode: String(row.tax_code),
+    pension: row.pension as SalaryChange["pension"],
+    effectiveFromYear:
+      row.effective_from_year != null ? Number(row.effective_from_year) : null,
+    effectiveFromMonth:
+      row.effective_from_month != null ? Number(row.effective_from_month) : null,
+    endsUntilYear: Number(row.ends_until_year),
+    endsUntilMonth: Number(row.ends_until_month),
     createdAt: String(row.created_at),
   };
 }
@@ -59,6 +79,8 @@ function mapSavingsGoal(row: Record<string, unknown>): SavingsGoal {
     currentBalance: Number(row.current_balance ?? 0),
     earnsInterest: Boolean(row.earns_interest),
     interestRate: Number(row.interest_rate ?? 0),
+    interestFrequency: row.interest_frequency === "monthly" ? "monthly" : "annually",
+    notes: typeof row.notes === "string" ? row.notes : null,
     startsFromYear:
       row.starts_from_year != null ? Number(row.starts_from_year) : null,
     startsFromMonth:
@@ -108,21 +130,33 @@ export default async function Dashboard() {
 
   const currentYear = new Date().getFullYear();
 
-  const [{ data: monthsRows }, { data: recurringRows }, { data: savingsRows }] =
-    await Promise.all([
-      supabase
-        .from("monthly_entries")
-        .select("year, month, take_home_salary, incomes, expenditures, savings")
-        .eq("user_id", user.id),
-      supabase.from("recurring_expenses").select("*").eq("user_id", user.id),
-      supabase.from("savings_goals").select("*").eq("user_id", user.id),
-    ]);
+  const [
+    { data: monthsRows },
+    { data: recurringRows },
+    { data: savingsRows },
+    { data: salaryChangeRows },
+  ] = await Promise.all([
+    supabase
+      .from("monthly_entries")
+      .select(
+        "year, month, take_home_salary, take_home_salary_note, incomes, expenditures, savings",
+      )
+      .eq("user_id", user.id),
+    supabase.from("recurring_expenses").select("*").eq("user_id", user.id),
+    supabase.from("savings_goals").select("*").eq("user_id", user.id),
+    supabase.from("salary_changes").select("*").eq("user_id", user.id),
+  ]);
 
   const allMonths = parseAllMonthlyRows(monthsRows ?? []);
+  const salaryChanges = (salaryChangeRows ?? []).map(mapSalaryChange);
   const { financialInfo: fi, userInfo } = input;
-  const takeHome = calculateTakeHome(fi);
-  const baseNetMonthly = Math.round(takeHome.netMonthly);
   const today = new Date();
+  const takeHome = calculateTakeHomeForMonth(
+    fi,
+    today.getFullYear(),
+    today.getMonth() + 1,
+    salaryChanges,
+  );
   const payDate = getAdjustedPayDateForMonth(
     today.getFullYear(),
     today.getMonth() + 1,
@@ -147,7 +181,8 @@ export default async function Dashboard() {
       initialMonthsData={allMonths}
       recurringExpenses={(recurringRows ?? []).map(mapRecurring)}
       savingsGoals={(savingsRows ?? []).map(mapSavingsGoal)}
-      baseNetMonthly={baseNetMonthly}
+      fi={fi}
+      salaryChanges={salaryChanges}
       currentMonthPay={currentMonthPay}
     />
   );

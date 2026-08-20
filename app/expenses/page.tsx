@@ -9,6 +9,7 @@ function mapRow(row: Record<string, unknown>): RecurringExpense {
     id: String(row.id),
     label: String(row.label),
     amount: Number(row.amount),
+    intervalMonths: row.interval_months != null ? Number(row.interval_months) : 1,
     startsFromYear:
       row.starts_from_year != null ? Number(row.starts_from_year) : null,
     startsFromMonth:

@@ -3,6 +3,8 @@ export type RecurringExpense = {
   id: string;
   label: string;
   amount: number;
+  /** Recurs every N months, anchored to startsFrom (or createdAt if unset). 1 = every month. */
+  intervalMonths: number;
   startsFromYear: number | null;
   startsFromMonth: number | null;
   endsUntilYear: number | null;
@@ -14,6 +16,7 @@ export type RecurringExpense = {
 export type RecurringExpenseInput = {
   label: string;
   amount: number;
+  intervalMonths?: number;
   startsFromYear?: number | null;
   startsFromMonth?: number | null;
   endsUntilYear?: number | null;

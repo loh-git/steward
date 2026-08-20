@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import SalaryHistorySection from "./salary-history-section";
+import type { SalaryChange } from "@/types/salaryHistory";
 
 type FinancialDetails = {
   grossSalary: string;
@@ -18,12 +20,14 @@ export default function SettingsClient({
   monthlyTakeHome,
   hasFinancialProfile,
   financialDetails,
+  salaryChanges,
 }: {
   userEmail: string;
   profileName: string;
   monthlyTakeHome: number | null;
   hasFinancialProfile: boolean;
   financialDetails: FinancialDetails | null;
+  salaryChanges: SalaryChange[];
 }) {
   const router = useRouter();
   const [confirmText, setConfirmText] = useState("");
@@ -190,6 +194,10 @@ export default function SettingsClient({
             Edit financial profile
           </a>
         </section>
+
+        {hasFinancialProfile ? (
+          <SalaryHistorySection salaryChanges={salaryChanges} />
+        ) : null}
 
         {isDev ? (
           <section>

@@ -1,3 +1,9 @@
+// How often interest is compounded — a rate compounded monthly grows a balance
+// faster than the same nominal rate compounded annually.
+export type InterestFrequency = "monthly" | "annually";
+
+export const SAVINGS_GOAL_NOTES_MAX_LENGTH = 500;
+
 //  An instance of a savings goal retrieved from BE
 export type SavingsGoal = {
   id: string;
@@ -7,6 +13,9 @@ export type SavingsGoal = {
   currentBalance: number;
   earnsInterest: boolean;
   interestRate: number;
+  interestFrequency: InterestFrequency;
+  /** Free-text note, capped at SAVINGS_GOAL_NOTES_MAX_LENGTH characters. */
+  notes: string | null;
   startsFromYear: number | null;
   startsFromMonth: number | null;
   endsUntilYear: number | null;
@@ -22,6 +31,8 @@ export type SavingsGoalInput = {
   currentBalance?: number;
   earnsInterest?: boolean;
   interestRate?: number;
+  interestFrequency?: InterestFrequency;
+  notes?: string | null;
   startsFromYear?: number | null;
   startsFromMonth?: number | null;
   endsUntilYear?: number | null;

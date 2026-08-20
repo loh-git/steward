@@ -8,7 +8,7 @@ type YearlyPlannerSectionProps = {
   year: number;
   onYearChange: (year: number) => void;
   months: MonthlyEntry[];
-  baseNetMonthly: number;
+  getBaseNetMonthly: (year: number, month: number) => number;
   onZoomMonth: (month: number) => void;
   showAllMonths: boolean;
   onShowAllMonthsChange: () => void;
@@ -18,7 +18,7 @@ export default function YearlyPlannerSection({
   year,
   onYearChange,
   months,
-  baseNetMonthly,
+  getBaseNetMonthly,
   onZoomMonth,
   showAllMonths,
   onShowAllMonthsChange,
@@ -70,7 +70,7 @@ export default function YearlyPlannerSection({
           <MonthSummaryCard
             key={`${entry.year}-${entry.month}`}
             entry={entry}
-            baseNetMonthly={baseNetMonthly}
+            baseNetMonthly={getBaseNetMonthly(entry.year, entry.month)}
             onZoom={() => onZoomMonth(entry.month)}
           />
         ))}

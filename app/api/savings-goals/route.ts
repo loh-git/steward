@@ -12,6 +12,8 @@ function rowToGoal(row: Record<string, unknown>): SavingsGoal {
     currentBalance: Number(row.current_balance ?? 0),
     earnsInterest: Boolean(row.earns_interest),
     interestRate: Number(row.interest_rate ?? 0),
+    interestFrequency: row.interest_frequency === "monthly" ? "monthly" : "annually",
+    notes: typeof row.notes === "string" ? row.notes : null,
     startsFromYear:
       row.starts_from_year != null ? Number(row.starts_from_year) : null,
     startsFromMonth:
@@ -74,6 +76,11 @@ export async function POST(req: Request) {
       current_balance: Number(body.currentBalance ?? 0),
       earns_interest: Boolean(body.earnsInterest),
       interest_rate: Number(body.interestRate ?? 0),
+      interest_frequency: body.interestFrequency === "monthly" ? "monthly" : "annually",
+      notes:
+        typeof body.notes === "string" && body.notes.trim()
+          ? body.notes.trim().slice(0, 500)
+          : null,
       starts_from_year: body.startsFromYear ?? null,
       starts_from_month: body.startsFromMonth ?? null,
       ends_until_year: body.endsUntilYear ?? null,
@@ -113,6 +120,11 @@ export async function PUT(req: Request) {
       current_balance: Number(body.currentBalance ?? 0),
       earns_interest: Boolean(body.earnsInterest),
       interest_rate: Number(body.interestRate ?? 0),
+      interest_frequency: body.interestFrequency === "monthly" ? "monthly" : "annually",
+      notes:
+        typeof body.notes === "string" && body.notes.trim()
+          ? body.notes.trim().slice(0, 500)
+          : null,
       starts_from_year: body.startsFromYear ?? null,
       starts_from_month: body.startsFromMonth ?? null,
       ends_until_year: body.endsUntilYear ?? null,

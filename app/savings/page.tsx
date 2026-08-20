@@ -2,7 +2,22 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import type { SavingsGoal } from "@/types/savingsGoals";
+import type { BudgetLineItem, MonthlyEntry } from "@/types/monthlyPlan";
 import SavingsClient from "./savings-client";
+
+function mapMonthlyRow(row: {
+  year: number;
+  month: number;
+  savings?: unknown;
+}): MonthlyEntry {
+  return {
+    year: row.year,
+    month: row.month,
+    incomes: [],
+    expenditures: [],
+    savings: Array.isArray(row.savings) ? (row.savings as BudgetLineItem[]) : [],
+  };
+}
 
 function mapRow(row: Record<string, unknown>): SavingsGoal {
   return {
@@ -13,6 +28,8 @@ function mapRow(row: Record<string, unknown>): SavingsGoal {
     currentBalance: Number(row.current_balance ?? 0),
     earnsInterest: Boolean(row.earns_interest),
     interestRate: Number(row.interest_rate ?? 0),
+    interestFrequency: row.interest_frequency === "monthly" ? "monthly" : "annually",
+    notes: typeof row.notes === "string" ? row.notes : null,
     startsFromYear:
       row.starts_from_year != null ? Number(row.starts_from_year) : null,
     startsFromMonth:
@@ -33,11 +50,22 @@ export default async function SavingsPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
-  const { data } = await supabase
-    .from("savings_goals")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: true });
+  const [{ data }, { data: monthsRows }] = await Promise.all([
+    supabase
+      .from("savings_goals")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true }),
+    supabase
+      .from("monthly_entries")
+      .select("year, month, savings")
+      .eq("user_id", user.id),
+  ]);
 
-  return <SavingsClient initialItems={(data ?? []).map(mapRow)} />;
+  return (
+    <SavingsClient
+      initialItems={(data ?? []).map(mapRow)}
+      initialMonthlyEntries={(monthsRows ?? []).map(mapMonthlyRow)}
+    />
+  );
 }

@@ -32,6 +32,7 @@ function mapRecurring(row: Record<string, unknown>): RecurringExpense {
     id: String(row.id),
     label: String(row.label),
     amount: Number(row.amount),
+    intervalMonths: row.interval_months != null ? Number(row.interval_months) : 1,
     startsFromYear:
       row.starts_from_year != null ? Number(row.starts_from_year) : null,
     startsFromMonth:
@@ -53,6 +54,8 @@ function mapSavingsGoal(row: Record<string, unknown>): SavingsGoal {
     currentBalance: Number(row.current_balance ?? 0),
     earnsInterest: Boolean(row.earns_interest),
     interestRate: Number(row.interest_rate ?? 0),
+    interestFrequency: row.interest_frequency === "monthly" ? "monthly" : "annually",
+    notes: typeof row.notes === "string" ? row.notes : null,
     startsFromYear:
       row.starts_from_year != null ? Number(row.starts_from_year) : null,
     startsFromMonth:

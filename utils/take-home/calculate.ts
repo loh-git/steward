@@ -1,9 +1,12 @@
-import type { 
+import type {
   FinancialInfo,
   SalarySacrificeFrequency,
+  TaxYear,
 } from "@/types/financialProfile";
 import type { TakeHomeResult, TakeHomeDeductions } from "@/types/takeHome";
-import { TAX_YEAR_CONFIG } from "./constants";
+import type { SalaryChange } from "@/types/salaryHistory";
+import { TAX_YEAR_CONFIG, TAX_YEAR_ORDER } from "./constants";
+import { monthIndex } from "@/utils/monthly/merge-recurring";
 
 
 
@@ -49,6 +52,83 @@ export function getAdjustedPayDateForMonth(
   }
 
   return candidate;
+}
+
+/**
+ * Maps a calendar month to the UK tax year it actually falls in (6 Apr–5 Apr),
+ * clamped to the nearest end of TAX_YEAR_ORDER when the real tax year isn't in
+ * our data yet (e.g. a future year constants.ts hasn't been updated for).
+ */
+export function resolveTaxYearForCalendarMonth(year: number, month: number): TaxYear {
+  const startYear = month <= 3 ? year - 1 : year;
+  const label = `${startYear}/${String(startYear + 1).slice(-2)}` as TaxYear;
+  const index = TAX_YEAR_ORDER.indexOf(label);
+  if (index === -1) {
+    return startYear < Number(TAX_YEAR_ORDER[0].slice(0, 4))
+      ? TAX_YEAR_ORDER[0]
+      : TAX_YEAR_ORDER[TAX_YEAR_ORDER.length - 1];
+  }
+  return label;
+}
+
+/** Closed-window predicate for salary_changes rows. Deliberately not appliesToMonth's
+ * convention: a null effectiveFrom means "no lower bound", never a createdAt fallback. */
+function withinSalaryChangeWindow(
+  change: Pick<
+    SalaryChange,
+    "effectiveFromYear" | "effectiveFromMonth" | "endsUntilYear" | "endsUntilMonth"
+  >,
+  year: number,
+  month: number,
+): boolean {
+  const target = monthIndex(year, month);
+  const start =
+    change.effectiveFromYear != null && change.effectiveFromMonth != null
+      ? monthIndex(change.effectiveFromYear, change.effectiveFromMonth)
+      : -Infinity;
+  if (target < start) return false;
+  return target <= monthIndex(change.endsUntilYear, change.endsUntilMonth);
+}
+
+/** Resolves annualIncome/taxCode/pension for a given calendar month: a matching
+ * salary_changes window if one covers it, otherwise the live profile values. */
+export function resolveSalaryForMonth(
+  fi: FinancialInfo,
+  salaryChanges: SalaryChange[],
+  year: number,
+  month: number,
+): Pick<FinancialInfo, "annualIncome" | "taxCode" | "pension"> {
+  // Windows shouldn't overlap by construction, but if data is ever malformed,
+  // prefer whichever candidate ended most recently (closest to "now").
+  const candidates = salaryChanges
+    .filter((c) => withinSalaryChangeWindow(c, year, month))
+    .sort(
+      (a, b) =>
+        monthIndex(b.endsUntilYear, b.endsUntilMonth) -
+        monthIndex(a.endsUntilYear, a.endsUntilMonth),
+    );
+  const match = candidates[0];
+  if (!match) {
+    return { annualIncome: fi.annualIncome, taxCode: fi.taxCode, pension: fi.pension };
+  }
+  return { annualIncome: match.annualIncome, taxCode: match.taxCode, pension: match.pension };
+}
+
+/** calculateTakeHome, but using the tax year and (if salary history is passed) the
+ * annualIncome/taxCode/pension that actually applied to the given calendar month,
+ * rather than blindly trusting whatever's currently stored on the profile. */
+export function calculateTakeHomeForMonth(
+  fi: FinancialInfo,
+  year: number,
+  month: number,
+  salaryChanges: SalaryChange[] = [],
+): TakeHomeResult {
+  const resolvedSalary = resolveSalaryForMonth(fi, salaryChanges, year, month);
+  return calculateTakeHome({
+    ...fi,
+    ...resolvedSalary,
+    taxYear: resolveTaxYearForCalendarMonth(year, month),
+  });
 }
 
 function parsePersonalAllowance(taxCode: string, defaultAllowance: number): number {

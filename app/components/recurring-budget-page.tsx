@@ -2,8 +2,21 @@
 
 import { useState } from "react";
 import { formatGBP } from "@/utils/format/currency";
-import { MONTH_NAMES } from "@/types/monthlyPlan";
-import { TrashIcon } from "@/app/dashboard/components/icons";
+import { MONTH_NAMES, type MonthlyEntry } from "@/types/monthlyPlan";
+import {
+  SAVINGS_GOAL_NOTES_MAX_LENGTH,
+  type InterestFrequency,
+} from "@/types/savingsGoals";
+import { TrashIcon, ChevronDownIcon } from "@/app/dashboard/components/icons";
+import {
+  projectSavingsGoalBalance,
+} from "@/utils/savings/projectBalance";
+
+// Preset "every N months" choices offered in the recurrence dropdown, plus
+// the "custom" sentinel that reveals a free-entry number input for anything
+// outside these. 1 (every month) is deliberately never offered — that's the
+// implicit default when custom recurrence is off.
+export const RECURRENCE_PRESETS = ["2", "3", "6", "12"] as const;
 
 export type RecurringFormValues = {
   label: string;
@@ -12,6 +25,10 @@ export type RecurringFormValues = {
   currentBalance?: string;
   earnsInterest?: boolean;
   interestRate?: string;
+  interestFrequency?: InterestFrequency;
+  customRecurrence?: boolean;
+  intervalMonths?: string;
+  notes?: string;
   startsFromYear: string;
   startsFromMonth: string;
   endsUntilYear: string;
@@ -25,6 +42,10 @@ export const emptyRecurringForm = (): RecurringFormValues => ({
   currentBalance: "",
   earnsInterest: false,
   interestRate: "",
+  interestFrequency: "annually",
+  customRecurrence: false,
+  intervalMonths: "2",
+  notes: "",
   startsFromYear: "",
   startsFromMonth: "",
   endsUntilYear: "",
@@ -39,10 +60,14 @@ type RecurringItem = {
   currentBalance?: number;
   earnsInterest?: boolean;
   interestRate?: number;
+  interestFrequency?: InterestFrequency;
+  intervalMonths?: number;
+  notes?: string | null;
   startsFromYear: number | null;
   startsFromMonth: number | null;
   endsUntilYear: number | null;
   endsUntilMonth: number | null;
+  createdAt: string;
 };
 
 function formatPeriod(
@@ -52,6 +77,20 @@ function formatPeriod(
 ): string {
   if (year == null || month == null) return fallback;
   return `${MONTH_NAMES[month - 1]} ${year}`;
+}
+
+// A rate compounded monthly grows a balance faster than the same nominal
+// annual rate compounded once a year — this projects 1 year ahead either way.
+function projectedBalanceIn1Year(
+  balance: number,
+  annualRatePercent: number,
+  frequency: InterestFrequency,
+): number {
+  const rate = annualRatePercent / 100;
+  if (frequency === "monthly") {
+    return balance * Math.pow(1 + rate / 12, 12);
+  }
+  return balance * (1 + rate);
 }
 
 export function RecurringBudgetPage({
@@ -68,6 +107,7 @@ export function RecurringBudgetPage({
   // (a goal has a running balance you're saving toward, a recurring expense doesn't).
   // Defaults to off so a new caller doesn't inherit savings-only fields by accident.
   showSavingsFields = false,
+  monthlyEntries = [],
 }: {
   title: string;
   description: string;
@@ -79,11 +119,30 @@ export function RecurringBudgetPage({
   onUpdate: (id: string, values: RecurringFormValues) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
   showSavingsFields?: boolean;
+  monthlyEntries?: MonthlyEntry[];
 }) {
   const [form, setForm] = useState<RecurringFormValues>(emptyRecurringForm());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [expandedProjections, setExpandedProjections] = useState<Set<string>>(
+    new Set(),
+  );
+
+  const toggleProjection = (id: string) =>
+    setExpandedProjections((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+
+  const now = new Date();
+  const startYear = now.getFullYear();
+  const startMonth = now.getMonth() + 1;
 
   const startEdit = (item: RecurringItem) => {
     setEditingId(item.id);
@@ -95,6 +154,13 @@ export function RecurringBudgetPage({
         item.currentBalance != null ? String(item.currentBalance) : "",
       earnsInterest: item.earnsInterest ?? false,
       interestRate: item.interestRate != null ? String(item.interestRate) : "",
+      interestFrequency: item.interestFrequency ?? "annually",
+      customRecurrence: (item.intervalMonths ?? 1) > 1,
+      intervalMonths:
+        item.intervalMonths != null && item.intervalMonths > 1
+          ? String(item.intervalMonths)
+          : "2",
+      notes: item.notes ?? "",
       // Previously defaulted to today's date on every edit, silently
       // overwriting the item's real start date on save even if the user
       // only meant to fix a typo in the label. Show what's actually stored,
@@ -188,6 +254,71 @@ export function RecurringBudgetPage({
                   disabled={form.usesVariableAmount}
                 />
               </label>
+              {!showSavingsFields ? (
+                <>
+                  <label className="flex items-center gap-2 rounded border border-ink-200 px-3 py-2 text-sm text-ink-700 sm:col-span-2">
+                    <input
+                      type="checkbox"
+                      checked={form.customRecurrence ?? false}
+                      onChange={(e) =>
+                        setForm({ ...form, customRecurrence: e.target.checked })
+                      }
+                    />
+                    Custom recurrence (not every month)
+                  </label>
+                  {form.customRecurrence ? (
+                    <>
+                      <label className="block">
+                        <span className="mb-1 block text-sm font-medium text-ink-700">
+                          Recurs
+                        </span>
+                        <select
+                          value={
+                            RECURRENCE_PRESETS.includes(
+                              (form.intervalMonths ?? "") as (typeof RECURRENCE_PRESETS)[number],
+                            )
+                              ? form.intervalMonths
+                              : "custom"
+                          }
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setForm({
+                              ...form,
+                              intervalMonths: value === "custom" ? "" : value,
+                            });
+                          }}
+                          className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
+                        >
+                          <option value="2">Every 2 months</option>
+                          <option value="3">Quarterly (every 3 months)</option>
+                          <option value="6">Every 6 months</option>
+                          <option value="12">Annually</option>
+                          <option value="custom">Other…</option>
+                        </select>
+                      </label>
+                      {!RECURRENCE_PRESETS.includes(
+                        (form.intervalMonths ?? "") as (typeof RECURRENCE_PRESETS)[number],
+                      ) ? (
+                        <label className="block">
+                          <span className="mb-1 block text-sm font-medium text-ink-700">
+                            Every how many months?
+                          </span>
+                          <input
+                            type="number"
+                            min={2}
+                            step={1}
+                            value={form.intervalMonths ?? ""}
+                            onChange={(e) =>
+                              setForm({ ...form, intervalMonths: e.target.value })
+                            }
+                            className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
+                          />
+                        </label>
+                      ) : null}
+                    </>
+                  ) : null}
+                </>
+              ) : null}
               {showSavingsFields ? (
                 <>
                   <label className="flex items-center gap-2 rounded border border-ink-200 px-3 py-2 text-sm text-ink-700 sm:col-span-2">
@@ -231,22 +362,63 @@ export function RecurringBudgetPage({
                     This balance earns interest
                   </label>
                   {form.earnsInterest ? (
-                    <label className="block sm:col-span-2">
-                      <span className="mb-1 block text-sm font-medium text-ink-700">
-                        Interest rate (% annual)
-                      </span>
-                      <input
-                        type="number"
-                        min={0}
-                        step={0.01}
-                        value={form.interestRate ?? ""}
-                        onChange={(e) =>
-                          setForm({ ...form, interestRate: e.target.value })
-                        }
-                        className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
-                      />
-                    </label>
+                    <>
+                      <label className="block">
+                        <span className="mb-1 block text-sm font-medium text-ink-700">
+                          Interest rate (% annual)
+                        </span>
+                        <input
+                          type="number"
+                          min={0}
+                          step={0.01}
+                          value={form.interestRate ?? ""}
+                          onChange={(e) =>
+                            setForm({ ...form, interestRate: e.target.value })
+                          }
+                          className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="mb-1 block text-sm font-medium text-ink-700">
+                          Interest paid
+                        </span>
+                        <select
+                          value={form.interestFrequency ?? "annually"}
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              interestFrequency: e.target.value as InterestFrequency,
+                            })
+                          }
+                          className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
+                        >
+                          <option value="annually">Annually</option>
+                          <option value="monthly">Monthly</option>
+                        </select>
+                      </label>
+                    </>
                   ) : null}
+                  <label className="block sm:col-span-2">
+                    <span className="mb-1 flex items-center justify-between text-sm font-medium text-ink-700">
+                      <span>Notes (optional)</span>
+                      <span className="text-xs font-normal text-ink-400">
+                        {(form.notes ?? "").length}/{SAVINGS_GOAL_NOTES_MAX_LENGTH}
+                      </span>
+                    </span>
+                    <textarea
+                      value={form.notes ?? ""}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          notes: e.target.value.slice(0, SAVINGS_GOAL_NOTES_MAX_LENGTH),
+                        })
+                      }
+                      maxLength={SAVINGS_GOAL_NOTES_MAX_LENGTH}
+                      rows={3}
+                      placeholder="Anything worth remembering about this goal"
+                      className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
+                    />
+                  </label>
                 </>
               ) : null}
             </div>
@@ -372,7 +544,90 @@ export function RecurringBudgetPage({
                         item.endsUntilMonth,
                         "ongoing",
                       )}
+                      {item.intervalMonths && item.intervalMonths > 1
+                        ? ` · Every ${item.intervalMonths} months`
+                        : ""}
                     </p>
+                    {item.notes ? (
+                      <p className="mt-1 whitespace-pre-wrap text-xs text-ink-500">
+                        {item.notes}
+                      </p>
+                    ) : null}
+                    {item.earnsInterest && (item.currentBalance ?? 0) > 0 ? (
+                      <p className="mt-1 text-xs text-brass-700">
+                        {formatGBP(item.currentBalance ?? 0)} now → ~
+                        {formatGBP(
+                          projectedBalanceIn1Year(
+                            item.currentBalance ?? 0,
+                            item.interestRate ?? 0,
+                            item.interestFrequency ?? "annually",
+                          ),
+                        )}{" "}
+                        in 1 year ({item.interestRate}% compounded{" "}
+                        {item.interestFrequency === "monthly"
+                          ? "monthly"
+                          : "annually"}
+                        )
+                      </p>
+                    ) : null}
+                    {showSavingsFields ? (
+                      <div className="mt-2">
+                        <button
+                          type="button"
+                          onClick={() => toggleProjection(item.id)}
+                          aria-expanded={expandedProjections.has(item.id)}
+                          className="flex items-center gap-1.5 text-[11px] font-semibold tracking-wide text-ledger-600 hover:text-ledger-700"
+                        >
+                          {expandedProjections.has(item.id)
+                            ? "Hide monthly projection"
+                            : "Show monthly projection"}
+                          <ChevronDownIcon
+                            className={`h-3 w-3 transition-transform ${
+                              expandedProjections.has(item.id) ? "rotate-180" : ""
+                            }`}
+                          />
+                        </button>
+
+                        {expandedProjections.has(item.id) ? (
+                          <div className="mt-2 max-h-64 overflow-y-auto rounded border border-ink-100">
+                            <table className="w-full text-xs">
+                              <thead className="sticky top-0 bg-paper-card">
+                                <tr className="text-left text-ink-500">
+                                  <th className="px-3 py-1.5 font-medium">Month</th>
+                                  <th className="px-3 py-1.5 font-medium">
+                                    Contribution
+                                  </th>
+                                  <th className="px-3 py-1.5 font-medium">Balance</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {projectSavingsGoalBalance(
+                                  item,
+                                  monthlyEntries,
+                                  startYear,
+                                  startMonth,
+                                ).map((p) => (
+                                  <tr
+                                    key={`${p.year}-${p.month}`}
+                                    className="border-t border-ink-50"
+                                  >
+                                    <td className="px-3 py-1.5 text-ink-700">
+                                      {MONTH_NAMES[p.month - 1]} {p.year}
+                                    </td>
+                                    <td className="px-3 py-1.5 text-ink-700">
+                                      {formatGBP(p.contribution)}
+                                    </td>
+                                    <td className="px-3 py-1.5 font-medium text-ink-900">
+                                      {formatGBP(p.balance)}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : null}
                   </div>
                   <div className="flex shrink-0 items-center gap-3">
                     <span className="font-semibold text-ink-800">
@@ -424,6 +679,14 @@ export function parseRecurringPayload(values: RecurringFormValues) {
     currentBalance: values.currentBalance ? Number(values.currentBalance) : 0,
     earnsInterest: values.earnsInterest ?? false,
     interestRate: values.interestRate ? Number(values.interestRate) : 0,
+    interestFrequency: values.interestFrequency ?? "annually",
+    intervalMonths:
+      values.customRecurrence && values.intervalMonths
+        ? Math.max(2, Number(values.intervalMonths))
+        : 1,
+    notes: values.notes?.trim()
+      ? values.notes.trim().slice(0, SAVINGS_GOAL_NOTES_MAX_LENGTH)
+      : null,
     startsFromYear: values.startsFromYear
       ? Number(values.startsFromYear)
       : defaultYear,
