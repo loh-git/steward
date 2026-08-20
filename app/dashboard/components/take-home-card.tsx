@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { TakeHomeResult } from "@/utils/take-home/calculate";
+import type { TakeHomeResult } from "@/types/takeHome";
 import { formatGBP } from "@/utils/format/currency";
 import { BriefcaseIcon, ChevronDownIcon } from "./icons";
 

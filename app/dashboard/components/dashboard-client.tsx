@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { TakeHomeResult } from "@/utils/take-home/calculate";
+import type { TakeHomeResult } from "@/types/takeHome";
 import { calculateTakeHomeForMonth } from "@/utils/take-home/calculate";
 import {
   mergeMonthlyEntry,
