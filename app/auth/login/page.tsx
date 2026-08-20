@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "@/app/auth/actions";
+import { isNextRedirectError } from "@/utils/isNextRedirectError";
 import { toast } from "sonner";
 
 export default function Login() {

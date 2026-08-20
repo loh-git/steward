@@ -7,6 +7,7 @@ import StepIndicator from "@/app/setup/components/step-indicator";
 import { WIZARD_STEPS } from "@/app/setup/components/steps";
 import { saveFinancialProfile } from "./actions";
 import { calculateTakeHome } from "@/utils/take-home/calculate";
+import { isNextRedirectError } from "@/utils/isNextRedirectError";
 import { type FinancialProfilePayload } from "@/types/financialProfile";
 import {
   applyFieldUpdate,
@@ -113,6 +114,10 @@ export default function SetupForm({ initialData, userId }: SetupFormProps) {
     try {
       await saveFinancialProfile(formData);
     } catch (err) {
+      // saveFinancialProfile redirects on success, which Next.js implements by
+      // throwing — that's not a real failure, let it propagate so the
+      // navigation actually happens instead of showing a false error.
+      if (isNextRedirectError(err)) throw err;
       setSubmitting(false);
       setError(
         err instanceof Error ? err.message : "Failed to save your profile",

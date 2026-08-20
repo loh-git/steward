@@ -99,7 +99,10 @@ export function projectSavingsGoalBalance(
 
     // Interest compounds regardless of whether a contribution landed this
     // month — a balance already sitting in the account keeps earning it.
-    if (goal.earnsInterest) {
+    // Skipped on the very first point (i === 1): currentBalance is a snapshot
+    // as of right now, so no time has passed yet to have earned anything —
+    // growth only starts showing up from the following month onward.
+    if (goal.earnsInterest && i > 1) {
       const rate = (goal.interestRate ?? 0) / 100;
       if (goal.interestFrequency === "monthly") {
         balance *= 1 + rate / 12;
