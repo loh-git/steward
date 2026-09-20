@@ -1,40 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Steward
 
-## Database (Supabase)
+A ledger for UK take-home pay and monthly budgeting — built because I was tired of guessing my real take-home pay from gross salary and maintaining a spreadsheet to plan around it.
 
-Financial profiles are stored in `profiles` and `financial_profiles`. Apply the migration before using `/setup` — see [supabase/README.md](./supabase/README.md).
+## Disclaimer
 
-## Getting Started
+I am not qualified to give financial advice, and this app cannot be guaranteed to be 100% correct.
 
-First, run the development server:
+## What it does
+
+Steward calculates what UK earners actually take home after tax, National Insurance, pension, and student loan deductions, then lets you plan a monthly budget — income, recurring expenses, and savings goals — around that real number instead of the gross figure on your contract.
+
+The two halves are treated as equally important, not one bolted onto the other:
+
+- **Payroll accuracy** — England/Wales/NI and Scottish income tax bands, non-standard tax codes (BR, D0, D1, NT, K-codes), the >£100k personal allowance taper, multiple pension schemes (auto-enrolment, salary sacrifice, employer, personal) including qualifying-earnings banding, and every current UK student loan plan (1, 2, 4 Scotland, 5, postgraduate). Tax-year boundaries (6 April, not 1 January) are resolved per calendar month, so a "2026" yearly view correctly spans two real tax years instead of applying one flat rate to all twelve.
+- **Planning flexibility** — recurring expenses and savings goals auto-populate every applicable month they apply to (including custom recurrence, e.g. "every 3 months," not just monthly), but any individual month can override the amount, add a one-off note, or zero it out entirely without touching the underlying recurring definition or losing it for every other month.
+
+A few other things worth a look if you're skimming the code:
+
+- Savings goals project a month-by-month balance forward to their own end date, compounding interest monthly or annually depending on the goal.
+- Salary history is tracked as closed date windows, so a pay rise applies from a specified month onward while past months keep reflecting what you actually earned then — not a single flat number retroactively applied everywhere.
+- The setup flow is a fully animated multi-step wizard (Motion/Framer Motion) rather than one long form, with free-jump navigation between steps.
+- A custom UI design ("The Working Ledger" — vintage, confident) rather than an off-the-shelf UI kit.
+
+## Tech stack
+
+- **Next.js 16** (App Router, Server Components, Server Actions) + **React 19** + **TypeScript**
+- **Supabase** (Postgres + Auth) with Row Level Security on every user-scoped table
+- **Tailwind CSS v4** for styling, **Motion** for the setup wizard's animation, **Recharts** for the dashboard trend chart
+
+## Status
+
+Actively developed, currently exercised with test data rather than a live user base. Tax years beyond what HMRC has officially published (e.g. the far end of 2026/27) use my own frozen/projected estimates, clearly not guaranteed-accurate government figures.
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000). You'll need a Supabase project for the schema/migrations and required environment variables.
