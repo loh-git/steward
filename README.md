@@ -6,6 +6,31 @@ A ledger for UK take-home pay and monthly budgeting — built because I was tire
 
 I am not qualified to give financial advice, and this app cannot be guaranteed to be 100% correct.
 
+## Gallery
+
+**Setup wizard**
+![Setup screen](https://github.com/loh-git/steward/raw/master/assets/setup.jpg)
+
+**Dashboard — take-home breakdown, trend chart, and yearly planner**
+![Dashboard overview](https://github.com/loh-git/steward/raw/master/assets/dashboard1.jpg)
+![Dashboard, yearly planner scrolled](https://github.com/loh-git/steward/raw/master/assets/dashboard2.jpg)
+
+**Monthly budget breakdown — incomes, outgoings, and savings for one month**
+![Monthly detail view](https://github.com/loh-git/steward/raw/master/assets/monthly-view.jpg)
+
+**Recurring expenses — including custom recurrence (e.g. "every 3 months")**
+![Recurring expenses](https://github.com/loh-git/steward/raw/master/assets/recurring-expenses.jpg)
+
+**Savings goals — with notes and interest, plus a month-by-month balance projection**
+![Savings goals, add entry](https://github.com/loh-git/steward/raw/master/assets/savings-goals1.jpg)
+![Savings goals, monthly projection](https://github.com/loh-git/steward/raw/master/assets/savings-goals2.jpg)
+
+**Settings — profile summary and salary history**
+![Settings and salary history](https://github.com/loh-git/steward/raw/master/assets/settings.jpg)
+
+**Navigation**
+![Sidebar navigation](https://github.com/loh-git/steward/raw/master/assets/sidebar.jpg)
+
 ## What it does
 
 Steward calculates what UK earners actually take home after tax, National Insurance, pension, and student loan deductions, then lets you plan a monthly budget — income, recurring expenses, and savings goals — around that real number instead of the gross figure on your contract.
