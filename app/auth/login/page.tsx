@@ -29,7 +29,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-paper-canvas">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-paper-canvas px-4">
       <h1 className="mb-6 font-display text-3xl font-bold text-ink-900">
         Sign In
       </h1>

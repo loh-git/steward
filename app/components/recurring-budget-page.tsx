@@ -205,7 +205,7 @@ export function RecurringBudgetPage({
       <div className="mx-auto max-w-3xl">
         <div className="mb-8 flex items-start gap-3">
           <span
-            className={`flex h-11 w-11 items-center justify-center rounded-md ${accentClass}`}
+            className={`hidden h-11 w-11 items-center justify-center rounded-md sm:flex ${accentClass}`}
           >
             {icon}
           </span>
@@ -638,7 +638,7 @@ export function RecurringBudgetPage({
                     <button
                       type="button"
                       onClick={() => startEdit(item)}
-                      className="text-sm text-ledger-600 hover:underline"
+                      className="-my-3 px-1 py-3 text-sm text-ledger-600 hover:underline"
                     >
                       Edit
                     </button>
@@ -651,7 +651,7 @@ export function RecurringBudgetPage({
                           onDelete(item.id);
                         }
                       }}
-                      className="text-ink-300 hover:text-ledger-500"
+                      className="-m-2 rounded p-3 text-ink-300 transition hover:text-ledger-500"
                       aria-label={`Delete ${item.label}`}
                     >
                       <TrashIcon />

@@ -360,7 +360,7 @@ export default function MonthlyDetailView({
         </p>
       ) : null}
 
-      <div className="flex flex-wrap gap-1.25">
+      <div className="flex flex-wrap items-center gap-1.25">
         <button
           type="button"
           disabled={isSaving}
@@ -369,24 +369,43 @@ export default function MonthlyDetailView({
         >
           <FontAwesomeIcon icon={faAngleLeft} className="h-3 w-3" />
         </button>
-        {MONTH_NAMES.map((name, idx) => {
-          const month = idx + 1;
-          const active = month === selectedMonth;
-          return (
-            <button
-              key={name}
-              type="button"
-              onClick={() => onMonthChange(month)}
-              className={`rounded border px-4 py-1.5 text-sm font-medium transition ${
-                active
-                  ? "border-ledger-700 bg-ledger-700 text-white shadow-sm"
-                  : "border-transparent bg-paper-card/60 text-ink-600 hover:bg-paper-card"
-              }`}
-            >
+
+        {/* 12 pills don't fit a phone width without wrapping awkwardly —
+          a dropdown covers the same job in one row below sm. */}
+        <select
+          value={selectedMonth}
+          disabled={isSaving}
+          onChange={(e) => onMonthChange(Number(e.target.value))}
+          className="flex-1 rounded border border-ink-200 bg-paper-card px-3 py-1.5 text-sm font-medium text-ink-700 sm:hidden"
+        >
+          {MONTH_NAMES.map((name, idx) => (
+            <option key={name} value={idx + 1}>
               {name}
-            </button>
-          );
-        })}
+            </option>
+          ))}
+        </select>
+
+        <div className="hidden flex-wrap gap-1.25 sm:flex">
+          {MONTH_NAMES.map((name, idx) => {
+            const month = idx + 1;
+            const active = month === selectedMonth;
+            return (
+              <button
+                key={name}
+                type="button"
+                onClick={() => onMonthChange(month)}
+                className={`rounded border px-4 py-1.5 text-sm font-medium transition ${
+                  active
+                    ? "border-ledger-700 bg-ledger-700 text-white shadow-sm"
+                    : "border-transparent bg-paper-card/60 text-ink-600 hover:bg-paper-card"
+                }`}
+              >
+                {name}
+              </button>
+            );
+          })}
+        </div>
+
         <button
           type="button"
           className={styles.chevronButtons}
@@ -466,19 +485,19 @@ export default function MonthlyDetailView({
             />
             <div className="flex flex-wrap items-center gap-2 pt-1">
               <input
+                value={adjustmentReason}
+                onChange={(e) => setAdjustmentReason(e.target.value)}
+                placeholder="Reason (e.g. Bonus)"
+                disabled={savingIncomes}
+                className="w-36 rounded border border-ink-200 bg-paper-card px-2 py-1 text-xs"
+              />
+              <input
                 value={adjustmentAmount}
                 onChange={(e) => setAdjustmentAmount(e.target.value)}
                 placeholder="+150 or -40"
                 inputMode="decimal"
                 disabled={savingIncomes}
                 className="w-24 rounded border border-ink-200 bg-paper-card px-2 py-1 text-xs"
-              />
-              <input
-                value={adjustmentReason}
-                onChange={(e) => setAdjustmentReason(e.target.value)}
-                placeholder="Reason (e.g. Bonus)"
-                disabled={savingIncomes}
-                className="w-36 rounded border border-ink-200 bg-paper-card px-2 py-1 text-xs"
               />
               <button
                 type="button"
@@ -906,7 +925,7 @@ function EditableBudgetRow({
           type="button"
           disabled={disabled}
           onClick={() => onEdit(rowKey)}
-          className="rounded p-1 text-ink-400 transition hover:bg-ink-100 hover:text-ink-700 disabled:opacity-50"
+          className="-m-2 rounded p-3 text-ink-400 transition hover:bg-ink-100 hover:text-ink-700 disabled:opacity-50"
           aria-label={`Edit ${label}`}
         >
           <PencilIcon />
@@ -916,7 +935,7 @@ function EditableBudgetRow({
             type="button"
             disabled={disabled}
             onClick={onDelete}
-            className="rounded p-1 text-ink-300 transition hover:text-ledger-500 disabled:opacity-50"
+            className="-m-2 rounded p-3 text-ink-300 transition hover:text-ledger-500 disabled:opacity-50"
             aria-label={`Remove ${label}`}
           >
             <TrashIcon />

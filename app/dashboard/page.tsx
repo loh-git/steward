@@ -108,7 +108,7 @@ export default async function Dashboard() {
 
   if (!input) {
     return (
-      <div className="min-h-screen bg-paper-canvas p-8">
+      <div className="min-h-screen bg-paper-canvas px-4 py-8 sm:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="mb-4 font-display text-3xl font-bold text-ink-900">
             No Financial Data
@@ -119,7 +119,7 @@ export default async function Dashboard() {
           </p>
           <a
             href="/setup"
-            className="rounded bg-ledger-600 px-4 py-2 text-white hover:bg-ledger-700"
+            className="rounded bg-ledger-600 px-4 py-3 text-white hover:bg-ledger-700"
           >
             Go to Setup
           </a>

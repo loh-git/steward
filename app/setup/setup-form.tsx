@@ -138,7 +138,7 @@ export default function SetupForm({ initialData, userId }: SetupFormProps) {
   };
 
   return (
-    <div className="min-h-screen bg-paper-canvas p-8">
+    <div className="min-h-screen bg-paper-canvas px-4 py-8 sm:px-8">
       <div className="max-w-3xl mx-auto">
         <h1 className="mb-2 font-display text-3xl font-bold text-ink-900">
           Financial Profile Setup
@@ -183,7 +183,7 @@ export default function SetupForm({ initialData, userId }: SetupFormProps) {
                 type="button"
                 onClick={() => goToStep(currentStep - 1)}
                 disabled={submitting}
-                className="rounded border border-ink-300 px-4 py-2 text-ink-700 hover:bg-ink-50 disabled:opacity-60"
+                className="rounded border border-ink-300 px-5 py-3 text-ink-700 hover:bg-ink-50 disabled:opacity-60"
               >
                 Back
               </button>
@@ -195,7 +195,7 @@ export default function SetupForm({ initialData, userId }: SetupFormProps) {
                 type="button"
                 onClick={() => goToStep(currentStep + 1)}
                 disabled={isForwardBlocked}
-                className="rounded bg-ledger-600 px-6 py-2 text-white hover:bg-ledger-700 disabled:opacity-60"
+                className="rounded bg-ledger-600 px-6 py-3 text-white hover:bg-ledger-700 disabled:opacity-60"
               >
                 Next
               </button>

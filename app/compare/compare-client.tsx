@@ -82,7 +82,7 @@ export default function CompareClient({
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-start gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-md bg-ink-100 text-ink-700">
+            <span className="hidden h-11 w-11 items-center justify-center rounded-md bg-ink-100 text-ink-700 sm:flex">
               <GridViewIcon />
             </span>
             <div>

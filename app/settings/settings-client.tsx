@@ -118,7 +118,7 @@ export default function SettingsClient({
   }
 
   return (
-    <div className="min-h-screen bg-paper-canvas p-8">
+    <div className="min-h-screen bg-paper-canvas px-4 py-8 sm:px-8">
       <div className="mx-auto max-w-3xl space-y-8 rounded-lg border border-ink-200 bg-paper-card p-8 shadow-sm">
         {message ? (
           <p className="rounded-md border border-bottle-200 bg-bottle-50 px-4 py-2 text-sm text-bottle-700">

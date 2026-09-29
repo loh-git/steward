@@ -13,7 +13,6 @@ export default function Step5Review({
   takeHome,
   submitting,
   error,
-  formData,
 }: WizardStepProps) {
   return (
     <div className="space-y-6">
@@ -76,15 +75,6 @@ export default function Step5Review({
           {error}
         </p>
       ) : null}
-
-      <details className="rounded-lg border border-ink-200">
-        <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-ink-800">
-          Preview calculation payload
-        </summary>
-        <pre className="overflow-x-auto px-4 pb-4 text-xs text-ink-600">
-          {JSON.stringify(formData, null, 2)}
-        </pre>
-      </details>
 
       <button
         type="submit"

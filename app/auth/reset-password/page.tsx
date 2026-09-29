@@ -30,7 +30,7 @@ export default function ResetPasswordPage() {
 
   if (emailSent) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-paper-canvas">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-paper-canvas px-4">
         <div className="w-full max-w-sm rounded-lg border border-ink-200 bg-paper-card p-8 shadow-sm">
           <h1 className="mb-4 font-display text-2xl font-bold text-ink-900">
             Check your email
@@ -58,7 +58,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-paper-canvas">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-paper-canvas px-4">
       <h1 className="mb-6 font-display text-3xl font-bold text-ink-900">
         Reset Password
       </h1>

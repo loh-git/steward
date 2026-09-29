@@ -254,7 +254,7 @@ function ViewToggle({
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex items-center gap-2 rounded px-4 py-2 text-sm font-medium transition ${
+      className={`flex w-1/2 items-center justify-center gap-2 rounded px-4 py-2 text-sm font-medium transition sm:w-auto ${
         active
           ? "bg-paper-card text-ledger-700 shadow-sm"
           : "text-ink-500 hover:text-ink-700"
