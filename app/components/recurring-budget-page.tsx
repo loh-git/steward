@@ -145,6 +145,9 @@ export function RecurringBudgetPage({
   const startMonth = now.getMonth() + 1;
 
   const startEdit = (item: RecurringItem) => {
+    // The edit form lives at the top of the page; without this, editing an
+    // item further down the list leaves the form open off-screen.
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setEditingId(item.id);
     setForm({
       label: item.label,
@@ -223,7 +226,11 @@ export function RecurringBudgetPage({
 
         <div className="mb-8 rounded-lg border border-ink-200 bg-paper-card p-6 shadow-sm">
           <h2 className="mb-4 font-display text-lg font-semibold text-ink-900">
-            {editingId ? "Edit entry" : "Add entry"}
+            {editingId
+              ? `Editing ${items.find((i) => i.id === editingId)?.label ?? "entry"}`
+              : showSavingsFields
+                ? "Add Savings Goal"
+                : "Add Recurring Expense"}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -249,7 +256,7 @@ export function RecurringBudgetPage({
                   step={0.01}
                   value={form.amount}
                   onChange={(e) => setForm({ ...form, amount: e.target.value })}
-                  className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
+                  className="w-full rounded border border-ink-200 px-3 py-2 text-sm disabled:cursor-not-allowed disabled:bg-ink-50 disabled:text-ink-400"
                   required={!form.usesVariableAmount}
                   disabled={form.usesVariableAmount}
                 />
@@ -512,7 +519,7 @@ export function RecurringBudgetPage({
 
         <div className="rounded-lg border border-ink-200 bg-paper-card shadow-sm">
           <h2 className="border-b border-ink-100 px-6 py-4 font-display text-lg font-semibold text-ink-900">
-            Your entries ({items.length})
+            {showSavingsFields ? "Your Savings Goals" : "Your Recurring Expenses"} ({items.length})
           </h2>
           {items.length === 0 ? (
             <p className="px-6 py-8 text-sm text-ink-500">

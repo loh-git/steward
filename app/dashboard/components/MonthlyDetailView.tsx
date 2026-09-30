@@ -434,7 +434,7 @@ export default function MonthlyDetailView({
         />
 
         <SummaryTile
-          label="Unallocated Remaining"
+          label="Unallocated"
           value={formatGBP(remaining)}
           highlight
         />
@@ -966,7 +966,7 @@ function SummaryTile({
       }`}
     >
       <p className="text-xs text-ink-500">{label}</p>
-      <p className={`mt-1 text-2xl font-bold ${valueClass}`}>{value}</p>
+      <p className={`mt-1 text-lg font-bold ${valueClass}`}>{value}</p>
     </div>
   );
 }
@@ -1021,12 +1021,12 @@ function SavingsGoalAddRow({
   disabled?: boolean;
 }) {
   return (
-    <div className="mt-auto flex gap-2 border-t border-ink-100 pt-3">
+    <div className="mt-auto flex flex-wrap gap-2 border-t border-ink-100 pt-3">
       <select
         value={selectedGoalId}
         onChange={(e) => onGoalChange(e.target.value)}
         disabled={disabled}
-        className="min-w-0 flex-1 rounded border border-ink-200 bg-paper-card px-3 py-2 text-sm disabled:opacity-60"
+        className="w-full rounded border border-ink-200 bg-paper-card px-3 py-2 text-sm disabled:opacity-60 sm:min-w-0 sm:flex-1"
       >
         <option value="">Select savings goal…</option>
         {goals.map((g) => (
@@ -1079,7 +1079,7 @@ function AddRow({
   disabled?: boolean;
 }) {
   return (
-    <div className="mt-auto flex gap-2 border-t border-ink-100 pt-3">
+    <div className="mt-auto flex flex-wrap gap-2 border-t border-ink-100 pt-3">
       {fields.map((f) => (
         <input
           key={f.placeholder}
@@ -1094,7 +1094,7 @@ function AddRow({
             }
           }}
           className={`rounded border border-ink-200 px-3 py-2 text-sm disabled:opacity-60 ${
-            f.wide ? "min-w-0 flex-1" : "w-24"
+            f.wide ? "w-full sm:min-w-0 sm:flex-1" : "w-24"
           }`}
         />
       ))}

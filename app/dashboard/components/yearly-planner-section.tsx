@@ -35,7 +35,7 @@ export default function YearlyPlannerSection({
           <ChartIcon className="h-4 w-4 text-ledger-600" />
           YEARLY PLANNER OVERVIEW
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex w-full flex-wrap items-center justify-between gap-2 sm:w-auto sm:justify-start">
           <button
             type="button"
             className="rounded border border-ink-200 px-2.5 py-0.5 text-md text-white bg-ledger-600 transition hover:bg-ledger-500"
@@ -43,25 +43,27 @@ export default function YearlyPlannerSection({
           >
             {showAllMonths ? "Show Remaining Months" : "Show All Months"}
           </button>
-          <button
-            type="button"
-            onClick={() => onYearChange(year - 1)}
-            className={styles.chevronButtons}
-            aria-label="Previous year"
-          >
-            <FontAwesomeIcon icon={faAngleLeft} className="h-3 w-3" />
-          </button>
-          <span className="min-w-[3rem] text-center font-semibold text-ink-800">
-            {year}
-          </span>
-          <button
-            type="button"
-            onClick={() => onYearChange(year + 1)}
-            className={styles.chevronButtons}
-            aria-label="Next year"
-          >
-            <FontAwesomeIcon icon={faAngleRight} className="h-3 w-3" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onYearChange(year - 1)}
+              className={styles.chevronButtons}
+              aria-label="Previous year"
+            >
+              <FontAwesomeIcon icon={faAngleLeft} className="h-3 w-3" />
+            </button>
+            <span className="min-w-[3rem] text-center font-semibold text-ink-800">
+              {year}
+            </span>
+            <button
+              type="button"
+              onClick={() => onYearChange(year + 1)}
+              className={styles.chevronButtons}
+              aria-label="Next year"
+            >
+              <FontAwesomeIcon icon={faAngleRight} className="h-3 w-3" />
+            </button>
+          </div>
         </div>
       </div>
 
