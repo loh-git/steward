@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signUp } from "@/app/auth/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useCaptcha } from "@/utils/captcha/use-captcha";
 
 export default function Register() {
   const router = useRouter();
@@ -16,8 +17,13 @@ export default function Register() {
     confirmPassword.length >= password.length &&
     password.length > 0 &&
     !passwordMatch;
+  const captcha = useCaptcha();
   const validSubmit =
-    !passwordMatch || !email || !password || !email.includes("@");
+    !passwordMatch ||
+    !email ||
+    !password ||
+    !email.includes("@") ||
+    !captcha.ready;
   const isValidEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -27,12 +33,15 @@ export default function Register() {
     e.preventDefault();
 
     try {
-      await signUp(email, password);
+      await signUp(email, password, captcha.token);
       router.push("/dashboard");
     } catch (err: string | unknown) {
       const error =
         err instanceof Error ? err.message : "An unknown error occurred";
       toast.error(error, { position: "top-right" });
+    } finally {
+      // The token was spent by the attempt above, win or lose.
+      captcha.reset();
     }
   };
 
@@ -116,6 +125,7 @@ export default function Register() {
             </p>
           )}
         </div>
+        {captcha.widget}
         <div className="flex items-center justify-between">
           <button
             className={`w-full rounded bg-ledger-600 px-4 py-2 text-white hover:bg-ledger-700 ${!passwordMatch || !email || !password ? "opacity-50 cursor-not-allowed" : ""}`}

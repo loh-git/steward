@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import ConnectionListener from "./connection-listener";
 import { SidebarProvider } from "./sidebar-provider";
 import AppSidebar from "./app-sidebar";
+import { DemoBanner } from "./DemoBanner";
 
 export function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -19,6 +20,7 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <AppSidebar />
       <Header />
+      <DemoBanner />
       <ConnectionListener />
       {children}
     </SidebarProvider>

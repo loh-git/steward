@@ -11,6 +11,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { DemoButton } from "@/app/components/DemoButton";
 
 export default async function Home() {
   // Receive cookies from client request, and pass them to the Supabase client so it can read the session cookie and determine if the user is logged in.
@@ -49,6 +50,7 @@ export default async function Home() {
             Log In
           </Link>
         </div>
+        <DemoButton variant="tertiary" className="mt-6 max-w-xs" />
       </>
     </div>
   );

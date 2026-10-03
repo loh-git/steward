@@ -4,9 +4,11 @@ import Link from "next/link";
 import { signOut } from "@/app/auth/actions";
 import { MenuIcon } from "@/app/dashboard/components/icons";
 import { useSidebar } from "./sidebar-provider";
+import { useIsDemoUser } from "@/utils/demo/use-is-demo";
 
 export function Header() {
   const { setOpen } = useSidebar();
+  const isDemo = useIsDemoUser();
 
   return (
     <header className="flex items-center justify-between border-b border-ink-200 bg-paper-card px-6 py-4">
@@ -31,7 +33,7 @@ export function Header() {
           onClick={() => signOut()}
           className="px-4 py-2 text-sm font-medium text-ink-600 hover:text-ink-900"
         >
-          Log Out
+          {isDemo ? "Exit demo" : "Log Out"}
         </button>
       </div>
     </header>

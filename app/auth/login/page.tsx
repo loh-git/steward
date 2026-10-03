@@ -6,24 +6,32 @@ import Link from "next/link";
 import { signIn } from "@/app/auth/actions";
 import { isNextRedirectError } from "@/utils/isNextRedirectError";
 import { toast } from "sonner";
+import { DemoButton } from "@/app/components/DemoButton";
+import { useCaptcha } from "@/utils/captcha/use-captcha";
 
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const captcha = useCaptcha();
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      await signIn(email, password);
+      await signIn(email, password, captcha.token);
       router.push("/dashboard");
     } catch (err) {
+      // A successful signIn ends in redirect(), which surfaces here as a rejection while Next
+      // still navigates, so it isn't a failure to report.
+      if (isNextRedirectError(err)) return;
       const message = err instanceof Error ? err.message : "Failed to sign in";
       toast.error(message);
     } finally {
+      // The token was spent by the attempt above, win or lose.
+      captcha.reset();
       setLoading(false);
     }
   };
@@ -71,9 +79,10 @@ export default function Login() {
             placeholder="••••••••"
           />
         </div>
+        {captcha.widget}
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || !captcha.ready}
           className="w-full rounded bg-ledger-600 px-4 py-2 text-white hover:bg-ledger-700 disabled:opacity-50"
         >
           {loading ? "Signing in..." : "Sign In"}
@@ -93,6 +102,11 @@ export default function Login() {
           </Link>
         </p>
       </form>
+      {/* Outside the form: a second button inside it would also submit the sign-in. */}
+      <div className="mt-4 flex w-full max-w-sm flex-col items-center">
+        <p className="mb-4 text-sm text-ink-500">or</p>
+        <DemoButton variant="tertiary" />
+      </div>
     </div>
   );
 }

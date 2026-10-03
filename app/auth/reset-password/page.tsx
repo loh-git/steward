@@ -5,25 +5,29 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { resetPassword } from "@/app/auth/actions";
 import { toast } from "sonner";
+import { useCaptcha } from "@/utils/captcha/use-captcha";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const captcha = useCaptcha();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      await resetPassword(email);
+      await resetPassword(email, captcha.token);
       setEmailSent(true);
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to send reset email";
       toast.error(message);
     } finally {
+      // The token was spent by the attempt above, win or lose.
+      captcha.reset();
       setLoading(false);
     }
   };
@@ -87,9 +91,10 @@ export default function ResetPasswordPage() {
             placeholder="you@example.com"
           />
         </div>
+        {captcha.widget}
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || !captcha.ready}
           className="w-full rounded bg-ledger-600 px-4 py-2 text-white hover:bg-ledger-700 disabled:opacity-50"
         >
           {loading ? "Sending..." : "Send Reset Link"}
