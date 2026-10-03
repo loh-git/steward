@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
@@ -21,6 +22,8 @@ function mapRow(row: Record<string, unknown>): RecurringExpense {
     createdAt: String(row.created_at),
   };
 }
+
+export const metadata: Metadata = { title: "Recurring Expenses" };
 
 export default async function ExpensesPage() {
   const cookieStore = await cookies();

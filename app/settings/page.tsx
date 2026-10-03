@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { calculateTakeHomeForMonth } from "@/utils/take-home/calculate";
@@ -25,6 +26,8 @@ function mapSalaryChange(row: Record<string, unknown>): SalaryChange {
     createdAt: String(row.created_at),
   };
 }
+
+export const metadata: Metadata = { title: "Settings" };
 
 export default async function SettingsPage() {
   const cookieStore = await cookies();

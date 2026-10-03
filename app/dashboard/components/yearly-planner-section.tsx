@@ -25,7 +25,7 @@ export default function YearlyPlannerSection({
 }: YearlyPlannerSectionProps) {
   const styles = {
     chevronButtons:
-      "rounded border border-ink-200 px-1.5 py-1 text-sm text-ink-600 transition hover:bg-ink-50",
+      "rounded border border-ink-500 px-1.5 py-1 text-sm text-ink-600 transition hover:bg-ink-50",
   };
 
   return (
@@ -35,13 +35,21 @@ export default function YearlyPlannerSection({
           <ChartIcon className="h-4 w-4 text-ledger-600" />
           YEARLY PLANNER OVERVIEW
         </div>
-        <div className="flex w-full flex-wrap items-center justify-between gap-2 sm:w-auto sm:justify-start">
+        {/* No wrapping: the toggle stays left and the year picker right on one row. Short labels
+            on mobile are what make that fit; the full label is kept for screen readers. */}
+        <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-start">
           <button
             type="button"
-            className="rounded border border-ink-200 px-2.5 py-0.5 text-md text-white bg-ledger-600 transition hover:bg-ledger-500"
+            className="whitespace-nowrap rounded border border-ink-500 bg-ledger-600 px-2.5 py-0.5 text-sm text-white transition hover:bg-ledger-500 sm:text-base"
             onClick={onShowAllMonthsChange}
+            aria-label={showAllMonths ? "Show Remaining Months" : "Show All Months"}
           >
-            {showAllMonths ? "Show Remaining Months" : "Show All Months"}
+            <span aria-hidden="true" className="sm:hidden">
+              {showAllMonths ? "Remaining" : "All Months"}
+            </span>
+            <span aria-hidden="true" className="hidden sm:inline">
+              {showAllMonths ? "Show Remaining Months" : "Show All Months"}
+            </span>
           </button>
           <div className="flex items-center gap-2">
             <button

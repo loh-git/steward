@@ -50,7 +50,7 @@ export default async function Home() {
             Log In
           </Link>
         </div>
-        <DemoButton variant="tertiary" className="mt-6 max-w-xs" />
+        <DemoButton variant="tertiary" className="mt-10 max-w-xs" />
       </>
     </div>
   );

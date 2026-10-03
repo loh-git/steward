@@ -1,13 +1,9 @@
-"use client";
-
 import Link from "next/link";
-import { useIsDemoUser } from "@/utils/demo/use-is-demo";
 
 // Slim strip under the header for demo visitors, so it's always clear the data is fictional.
+// Rendered by LayoutWrapper only for demo sessions; the server decides, so it's in the first
+// paint and doesn't shift the page.
 export function DemoBanner() {
-  const isDemo = useIsDemoUser();
-  if (!isDemo) return null;
-
   return (
     <div
       role="status"

@@ -98,7 +98,7 @@ export default function MonthSummaryCard({
       </div>
 
       <div className="mt-auto flex items-end justify-between pt-4">
-        <span className="text-[11px] font-semibold tracking-wider text-ink-400">
+        <span className="text-[11px] font-semibold tracking-wider text-ink-600">
           REMAINING
         </span>
         <span className="text-xl font-bold text-ink-900">

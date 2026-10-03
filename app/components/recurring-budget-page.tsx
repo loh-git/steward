@@ -242,7 +242,7 @@ export function RecurringBudgetPage({
                   value={form.label}
                   onChange={(e) => setForm({ ...form, label: e.target.value })}
                   placeholder="e.g. Rent, Groceries"
-                  className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
+                  className="w-full rounded border border-ink-500 px-3 py-2 text-sm"
                   required
                 />
               </label>
@@ -256,14 +256,14 @@ export function RecurringBudgetPage({
                   step={0.01}
                   value={form.amount}
                   onChange={(e) => setForm({ ...form, amount: e.target.value })}
-                  className="w-full rounded border border-ink-200 px-3 py-2 text-sm disabled:cursor-not-allowed disabled:bg-ink-50 disabled:text-ink-400"
+                  className="w-full rounded border border-ink-500 px-3 py-2 text-sm disabled:cursor-not-allowed disabled:bg-ink-50 disabled:text-ink-400"
                   required={!form.usesVariableAmount}
                   disabled={form.usesVariableAmount}
                 />
               </label>
               {!showSavingsFields ? (
                 <>
-                  <label className="flex items-center gap-2 rounded border border-ink-200 px-3 py-2 text-sm text-ink-700 sm:col-span-2">
+                  <label className="flex items-center gap-2 rounded border border-ink-500 px-3 py-2 text-sm text-ink-700 sm:col-span-2">
                     <input
                       type="checkbox"
                       checked={form.customRecurrence ?? false}
@@ -294,7 +294,7 @@ export function RecurringBudgetPage({
                               intervalMonths: value === "custom" ? "" : value,
                             });
                           }}
-                          className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
+                          className="w-full rounded border border-ink-500 px-3 py-2 text-sm"
                         >
                           <option value="2">Every 2 months</option>
                           <option value="3">Quarterly (every 3 months)</option>
@@ -318,7 +318,7 @@ export function RecurringBudgetPage({
                             onChange={(e) =>
                               setForm({ ...form, intervalMonths: e.target.value })
                             }
-                            className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
+                            className="w-full rounded border border-ink-500 px-3 py-2 text-sm"
                           />
                         </label>
                       ) : null}
@@ -328,7 +328,7 @@ export function RecurringBudgetPage({
               ) : null}
               {showSavingsFields ? (
                 <>
-                  <label className="flex items-center gap-2 rounded border border-ink-200 px-3 py-2 text-sm text-ink-700 sm:col-span-2">
+                  <label className="flex items-center gap-2 rounded border border-ink-500 px-3 py-2 text-sm text-ink-700 sm:col-span-2">
                     <input
                       type="checkbox"
                       checked={form.usesVariableAmount ?? false}
@@ -355,10 +355,10 @@ export function RecurringBudgetPage({
                       onChange={(e) =>
                         setForm({ ...form, currentBalance: e.target.value })
                       }
-                      className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
+                      className="w-full rounded border border-ink-500 px-3 py-2 text-sm"
                     />
                   </label>
-                  <label className="flex items-center gap-2 rounded border border-ink-200 px-3 py-2 text-sm text-ink-700 sm:col-span-2">
+                  <label className="flex items-center gap-2 rounded border border-ink-500 px-3 py-2 text-sm text-ink-700 sm:col-span-2">
                     <input
                       type="checkbox"
                       checked={form.earnsInterest ?? false}
@@ -382,7 +382,7 @@ export function RecurringBudgetPage({
                           onChange={(e) =>
                             setForm({ ...form, interestRate: e.target.value })
                           }
-                          className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
+                          className="w-full rounded border border-ink-500 px-3 py-2 text-sm"
                         />
                       </label>
                       <label className="block">
@@ -397,7 +397,7 @@ export function RecurringBudgetPage({
                               interestFrequency: e.target.value as InterestFrequency,
                             })
                           }
-                          className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
+                          className="w-full rounded border border-ink-500 px-3 py-2 text-sm"
                         >
                           <option value="annually">Annually</option>
                           <option value="monthly">Monthly</option>
@@ -408,7 +408,7 @@ export function RecurringBudgetPage({
                   <label className="block sm:col-span-2">
                     <span className="mb-1 flex items-center justify-between text-sm font-medium text-ink-700">
                       <span>Notes (optional)</span>
-                      <span className="text-xs font-normal text-ink-400">
+                      <span className="text-xs font-normal text-ink-600">
                         {(form.notes ?? "").length}/{SAVINGS_GOAL_NOTES_MAX_LENGTH}
                       </span>
                     </span>
@@ -423,7 +423,7 @@ export function RecurringBudgetPage({
                       maxLength={SAVINGS_GOAL_NOTES_MAX_LENGTH}
                       rows={3}
                       placeholder="Anything worth remembering about this goal"
-                      className="w-full rounded border border-ink-200 px-3 py-2 text-sm"
+                      className="w-full rounded border border-ink-500 px-3 py-2 text-sm"
                     />
                   </label>
                 </>
@@ -444,7 +444,7 @@ export function RecurringBudgetPage({
                   onChange={(e) =>
                     setForm({ ...form, startsFromMonth: e.target.value })
                   }
-                  className="rounded border border-ink-200 px-3 py-2 text-sm"
+                  className="rounded border border-ink-500 px-3 py-2 text-sm"
                 >
                   <option value="">Month</option>
                   {MONTH_NAMES.map((name, i) => (
@@ -460,7 +460,7 @@ export function RecurringBudgetPage({
                   onChange={(e) =>
                     setForm({ ...form, startsFromYear: e.target.value })
                   }
-                  className="rounded border border-ink-200 px-3 py-2 text-sm"
+                  className="rounded border border-ink-500 px-3 py-2 text-sm"
                 />
               </div>
             </fieldset>
@@ -475,7 +475,7 @@ export function RecurringBudgetPage({
                   onChange={(e) =>
                     setForm({ ...form, endsUntilMonth: e.target.value })
                   }
-                  className="rounded border border-ink-200 px-3 py-2 text-sm"
+                  className="rounded border border-ink-500 px-3 py-2 text-sm"
                 >
                   <option value="">Month</option>
                   {MONTH_NAMES.map((name, i) => (
@@ -491,7 +491,7 @@ export function RecurringBudgetPage({
                   onChange={(e) =>
                     setForm({ ...form, endsUntilYear: e.target.value })
                   }
-                  className="rounded border border-ink-200 px-3 py-2 text-sm"
+                  className="rounded border border-ink-500 px-3 py-2 text-sm"
                 />
               </div>
             </fieldset>
@@ -508,7 +508,7 @@ export function RecurringBudgetPage({
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="rounded border border-ink-200 px-4 py-2 text-sm text-ink-600 hover:bg-ink-50"
+                  className="rounded border border-ink-500 px-4 py-2 text-sm text-ink-600 hover:bg-ink-50"
                 >
                   Cancel
                 </button>
@@ -658,7 +658,7 @@ export function RecurringBudgetPage({
                           onDelete(item.id);
                         }
                       }}
-                      className="-m-2 rounded p-3 text-ink-300 transition hover:text-ledger-500"
+                      className="-m-2 rounded p-3 text-ink-500 transition hover:text-ledger-500"
                       aria-label={`Delete ${item.label}`}
                     >
                       <TrashIcon />

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
@@ -67,6 +68,8 @@ function mapSavingsGoal(row: Record<string, unknown>): SavingsGoal {
     createdAt: String(row.created_at),
   };
 }
+
+export const metadata: Metadata = { title: "Compare" };
 
 export default async function ComparePage() {
   const cookieStore = await cookies();

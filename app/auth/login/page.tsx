@@ -58,7 +58,7 @@ export default function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full rounded border border-ink-200 p-2"
+            className="w-full rounded border border-ink-500 p-2"
             placeholder="you@example.com"
           />
         </div>
@@ -75,7 +75,7 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full rounded border border-ink-200 p-2"
+            className="w-full rounded border border-ink-500 p-2"
             placeholder="••••••••"
           />
         </div>

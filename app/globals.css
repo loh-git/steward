@@ -52,7 +52,7 @@
   --color-ink-200: #d9d3c7;
   --color-ink-300: #bfb6a4;
   --color-ink-400: #978c77;
-  --color-ink-500: #786d5c;
+  --color-ink-500: #716758;
   --color-ink-600: #6b6255;
   --color-ink-700: #544c41;
   --color-ink-800: #362f27;
@@ -72,4 +72,30 @@ body {
   background: var(--color-paper-canvas);
   color: var(--color-ink-900);
   font-family: var(--font-sans);
+}
+
+/* Recharts makes the chart focusable (for keyboard users), so tapping or clicking it drew a black
+   focus ring around the chart and its container. Keep the ring for keyboard focus, drop it for
+   mouse clicks, and drop it entirely on touch devices (no keyboard) along with the tap flash. */
+.recharts-wrapper,
+.recharts-surface {
+  -webkit-tap-highlight-color: transparent;
+}
+.recharts-wrapper:focus:not(:focus-visible),
+.recharts-surface:focus:not(:focus-visible) {
+  outline: none;
+}
+@media (hover: none) {
+  .recharts-wrapper:focus,
+  .recharts-surface:focus {
+    outline: none;
+  }
+}
+
+/* On phones, tapping the chart opens the month breakdown card instead (see finance-trend-chart.tsx),
+   so the hover tooltip that a tap would also trigger is suppressed. 639px = just under Tailwind's sm. */
+@media (max-width: 639px) {
+  .recharts-tooltip-wrapper {
+    display: none !important;
+  }
 }

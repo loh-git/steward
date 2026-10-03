@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { loadFinancialProfile } from "@/utils/supabase/financial-profile";
 import { createClient } from "@/utils/supabase/server";
 import SetupForm from "./setup-form";
+
+export const metadata: Metadata = { title: "Set Up Your Profile" };
 
 export default async function SetupPage() {
   const cookieStore = await cookies();

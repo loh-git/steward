@@ -125,7 +125,7 @@ export default function SalaryHistorySection({
             step={0.01}
             value={annualIncome}
             onChange={(e) => setAnnualIncome(e.target.value)}
-            className="w-40 rounded border border-ink-200 bg-paper-card p-2"
+            className="w-40 rounded border border-ink-500 bg-paper-card p-2"
           />
         </div>
         <div>
@@ -140,7 +140,7 @@ export default function SalaryHistorySection({
             type="month"
             value={effectiveMonth}
             onChange={(e) => setEffectiveMonth(e.target.value)}
-            className="rounded border border-ink-200 bg-paper-card p-2"
+            className="rounded border border-ink-500 bg-paper-card p-2"
           />
         </div>
         <button

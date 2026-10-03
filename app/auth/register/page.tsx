@@ -65,7 +65,7 @@ export default function Register() {
             id="email"
             type="email"
             placeholder=""
-            className={`w-full rounded border p-2 ${emailTouched && !isValidEmail() && email ? "border-ledger-500" : "border-ink-200"}`}
+            className={`w-full rounded border p-2 ${emailTouched && !isValidEmail() && email ? "border-ledger-500" : "border-ink-500"}`}
             required
             value={email}
             onChange={(event) => {
@@ -88,7 +88,7 @@ export default function Register() {
             id="password"
             type="password"
             placeholder="Password"
-            className={`w-full rounded border p-2 ${highlightMismatch ? "border-ledger-500" : "border-ink-200"}`}
+            className={`w-full rounded border p-2 ${highlightMismatch ? "border-ledger-500" : "border-ink-500"}`}
             required
             value={password}
             onChange={(event) => {
@@ -112,7 +112,7 @@ export default function Register() {
             id="confirmPassword"
             type="password"
             placeholder="Confirm Password"
-            className={`w-full rounded border p-2 ${highlightMismatch ? "border-ledger-500" : "border-ink-200"}`}
+            className={`w-full rounded border p-2 ${highlightMismatch ? "border-ledger-500" : "border-ink-500"}`}
             required
             value={confirmPassword}
             onChange={(event) => {

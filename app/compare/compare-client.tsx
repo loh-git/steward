@@ -98,7 +98,7 @@ export default function CompareClient({
             <button
               type="button"
               onClick={() => setYear(year - 1)}
-              className="rounded border border-ink-200 bg-paper-card px-2.5 py-1.5 text-ink-600 transition hover:bg-ink-50"
+              className="rounded border border-ink-500 bg-paper-card px-2.5 py-1.5 text-ink-600 transition hover:bg-ink-50"
               aria-label="Previous year"
             >
               <FontAwesomeIcon icon={faAngleLeft} className="h-3 w-3" />
@@ -109,7 +109,7 @@ export default function CompareClient({
             <button
               type="button"
               onClick={() => setYear(year + 1)}
-              className="rounded border border-ink-200 bg-paper-card px-2.5 py-1.5 text-ink-600 transition hover:bg-ink-50"
+              className="rounded border border-ink-500 bg-paper-card px-2.5 py-1.5 text-ink-600 transition hover:bg-ink-50"
               aria-label="Next year"
             >
               <FontAwesomeIcon icon={faAngleRight} className="h-3 w-3" />
@@ -223,7 +223,7 @@ function CompareRowLine({
           key={i}
           className={`px-3 py-2.5 text-right tabular-nums ${
             i === currentMonthIndex ? "bg-ledger-50" : ""
-          } ${value == null ? "text-ink-300" : amountClass}`}
+          } ${value == null ? "text-ink-500" : amountClass}`}
         >
           {value == null ? "–" : formatGBP(value)}
         </td>

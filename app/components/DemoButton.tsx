@@ -5,7 +5,10 @@ import { toast } from "sonner";
 import { seedDemo } from "@/app/auth/demo-actions";
 import { createClient } from "@/utils/supabase/client";
 import { isNextRedirectError } from "@/utils/isNextRedirectError";
-import { useCaptcha } from "@/utils/captcha/use-captcha";
+import {
+  CaptchaCancelledError,
+  useOnDemandCaptcha,
+} from "@/utils/captcha/use-on-demand-captcha";
 
 type DemoButtonProps = {
   variant: "primary" | "secondary" | "tertiary";
@@ -38,7 +41,7 @@ const VARIANT_CLASSES = {
 export function DemoButton({ variant, className = "" }: DemoButtonProps) {
   const [signingIn, setSigningIn] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const captcha = useCaptcha();
+  const captcha = useOnDemandCaptcha();
   const busy = signingIn || isPending;
 
   const handleClick = async () => {
@@ -53,8 +56,22 @@ export function DemoButton({ variant, className = "" }: DemoButtonProps) {
       data: { session },
     } = await supabase.auth.getSession();
     if (!session) {
+      // Runs the CAPTCHA now. It only becomes visible (as a small card over the page) if
+      // Cloudflare needs the visitor to interact.
+      let captchaToken: string | undefined;
+      try {
+        captchaToken = await captcha.getToken();
+      } catch (err) {
+        if (!(err instanceof CaptchaCancelledError)) {
+          toast.error("Verification failed. Please try again.");
+        }
+        captcha.reset();
+        setSigningIn(false);
+        return;
+      }
+
       const { error } = await supabase.auth.signInAnonymously({
-        options: { captchaToken: captcha.token },
+        options: { captchaToken },
       });
       // Tokens are single-use, so the next attempt needs a fresh challenge either way.
       captcha.reset();
@@ -97,8 +114,8 @@ export function DemoButton({ variant, className = "" }: DemoButtonProps) {
         )}
         {busy ? "Setting up your demo…" : "Try Demo"}
       </button>
-      {captcha.widget}
       <p className="mt-2 text-xs text-ink-500">No sign-up. Sample data only.</p>
+      {captcha.widget}
     </div>
   );
 }

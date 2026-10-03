@@ -25,7 +25,7 @@ export default function Select({
         name={name}
         value={value}
         onChange={onChange}
-        className="w-full rounded border border-ink-200 bg-paper-card p-2"
+        className="w-full rounded border border-ink-500 bg-paper-card p-2"
       >
         {options.map((opt) => (
           <option key={String(opt.value)} value={opt.value}>

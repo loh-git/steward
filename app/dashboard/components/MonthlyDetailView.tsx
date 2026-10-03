@@ -376,7 +376,7 @@ export default function MonthlyDetailView({
           value={selectedMonth}
           disabled={isSaving}
           onChange={(e) => onMonthChange(Number(e.target.value))}
-          className="flex-1 rounded border border-ink-200 bg-paper-card px-3 py-1.5 text-sm font-medium text-ink-700 sm:hidden"
+          className="flex-1 rounded border border-ink-500 bg-paper-card px-3 py-1.5 text-sm font-medium text-ink-700 sm:hidden"
         >
           {MONTH_NAMES.map((name, idx) => (
             <option key={name} value={idx + 1}>
@@ -451,7 +451,7 @@ export default function MonthlyDetailView({
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-400">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-600">
                 Take-home Salary
               </p>
               {entry.takeHomeSalary != null ? (
@@ -489,7 +489,7 @@ export default function MonthlyDetailView({
                 onChange={(e) => setAdjustmentReason(e.target.value)}
                 placeholder="Reason (e.g. Bonus)"
                 disabled={savingIncomes}
-                className="w-36 rounded border border-ink-200 bg-paper-card px-2 py-1 text-xs"
+                className="w-36 rounded border border-ink-500 bg-paper-card px-2 py-1 text-xs"
               />
               <input
                 value={adjustmentAmount}
@@ -497,7 +497,7 @@ export default function MonthlyDetailView({
                 placeholder="+150 or -40"
                 inputMode="decimal"
                 disabled={savingIncomes}
-                className="w-24 rounded border border-ink-200 bg-paper-card px-2 py-1 text-xs"
+                className="w-24 rounded border border-ink-500 bg-paper-card px-2 py-1 text-xs"
               />
               <button
                 type="button"
@@ -508,7 +508,7 @@ export default function MonthlyDetailView({
                   !Number.isFinite(Number(adjustmentAmount)) ||
                   Number(adjustmentAmount) === 0
                 }
-                className="rounded border border-ink-200 px-2 py-1 text-xs font-medium text-ink-700 hover:bg-ink-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded border border-ink-500 px-2 py-1 text-xs font-medium text-ink-700 hover:bg-ink-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Apply
               </button>
@@ -516,7 +516,7 @@ export default function MonthlyDetailView({
           </div>
           {manualIncomes.length > 0 ? (
             <div className="space-y-2">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-400">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-600">
                 Manual Incomes
               </p>
               {manualIncomes.map((item) => (
@@ -577,7 +577,7 @@ export default function MonthlyDetailView({
           {recurringExpenditures.length > 0 ||
           overrideExpenditures.length > 0 ? (
             <div className="space-y-2">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-400">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-600">
                 Recurring expenses
               </p>
               {recurringExpenditures.map((item) => {
@@ -634,7 +634,7 @@ export default function MonthlyDetailView({
             </div>
           ) : null}
           <div className="space-y-2">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-400">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-600">
               Manual Expenses
             </p>
             {manualExpenditures.map((item) => (
@@ -779,7 +779,7 @@ export default function MonthlyDetailView({
           {allowSavingsAdd ? (
             goalsForDropdown.length > 0 ? (
               <>
-                <p className="text-[11px] text-ink-400">
+                <p className="text-[11px] text-ink-600">
                   Choose the amount for this month. Variable goals can also be
                   updated later from here.
                 </p>
@@ -802,7 +802,7 @@ export default function MonthlyDetailView({
                 />
               </>
             ) : (
-              <p className="mt-auto border-t border-ink-100 pt-3 text-center text-xs text-ink-400">
+              <p className="mt-auto border-t border-ink-100 pt-3 text-center text-xs text-ink-600">
                 {applicableGoals.length === 0
                   ? "Add savings goals on the Savings page first."
                   : "All goals for this month already have a monthly allocation."}
@@ -868,7 +868,7 @@ function EditableBudgetRow({
             <input
               value={editLabel}
               onChange={(e) => setEditLabel(e.target.value)}
-              className="min-w-0 flex-1 rounded border border-ink-200 px-2 py-1.5 text-sm"
+              className="min-w-0 flex-1 rounded border border-ink-500 px-2 py-1.5 text-sm"
               placeholder="Description"
             />
           ) : (
@@ -881,7 +881,7 @@ function EditableBudgetRow({
             min={0}
             value={editAmount}
             onChange={(e) => setEditAmount(e.target.value)}
-            className="w-full rounded border border-ink-200 px-2 py-1.5 text-sm sm:w-28"
+            className="w-full rounded border border-ink-500 px-2 py-1.5 text-sm sm:w-28"
           />
           <button
             type="button"
@@ -914,7 +914,7 @@ function EditableBudgetRow({
         >
           {label}
         </p>
-        {sublabel ? <p className="text-xs text-ink-400">{sublabel}</p> : null}
+        {sublabel ? <p className="text-xs text-ink-600">{sublabel}</p> : null}
       </div>
       <div className="flex shrink-0 items-center gap-2">
         <span className={`font-semibold ${amountClass(variant, positive)}`}>
@@ -925,7 +925,7 @@ function EditableBudgetRow({
           type="button"
           disabled={disabled}
           onClick={() => onEdit(rowKey)}
-          className="-m-2 rounded p-3 text-ink-400 transition hover:bg-ink-100 hover:text-ink-700 disabled:opacity-50"
+          className="-m-2 rounded p-3 text-ink-500 transition hover:bg-ink-100 hover:text-ink-700 disabled:opacity-50"
           aria-label={`Edit ${label}`}
         >
           <PencilIcon />
@@ -935,7 +935,7 @@ function EditableBudgetRow({
             type="button"
             disabled={disabled}
             onClick={onDelete}
-            className="-m-2 rounded p-3 text-ink-300 transition hover:text-ledger-500 disabled:opacity-50"
+            className="-m-2 rounded p-3 text-ink-500 transition hover:text-ledger-500 disabled:opacity-50"
             aria-label={`Remove ${label}`}
           >
             <TrashIcon />
@@ -997,7 +997,7 @@ function PlannerColumn({
         {children}
       </div>
       {saving ? (
-        <p className="mt-2 text-center text-xs text-ink-400">Saving…</p>
+        <p className="mt-2 text-center text-xs text-ink-600">Saving…</p>
       ) : null}
     </div>
   );
@@ -1026,7 +1026,7 @@ function SavingsGoalAddRow({
         value={selectedGoalId}
         onChange={(e) => onGoalChange(e.target.value)}
         disabled={disabled}
-        className="w-full rounded border border-ink-200 bg-paper-card px-3 py-2 text-sm disabled:opacity-60 sm:min-w-0 sm:flex-1"
+        className="w-full rounded border border-ink-500 bg-paper-card px-3 py-2 text-sm disabled:opacity-60 sm:min-w-0 sm:flex-1"
       >
         <option value="">Select savings goal…</option>
         {goals.map((g) => (
@@ -1047,7 +1047,7 @@ function SavingsGoalAddRow({
         }}
         placeholder="£0.00"
         disabled={disabled}
-        className="w-24 rounded border border-ink-200 px-3 py-2 text-sm disabled:opacity-60"
+        className="w-24 rounded border border-ink-500 px-3 py-2 text-sm disabled:opacity-60"
       />
       <button
         type="button"
@@ -1093,7 +1093,7 @@ function AddRow({
               onAdd();
             }
           }}
-          className={`rounded border border-ink-200 px-3 py-2 text-sm disabled:opacity-60 ${
+          className={`rounded border border-ink-500 px-3 py-2 text-sm disabled:opacity-60 ${
             f.wide ? "w-full sm:min-w-0 sm:flex-1" : "w-24"
           }`}
         />

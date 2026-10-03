@@ -66,7 +66,7 @@ export default function UpdatePasswordPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full rounded border border-ink-200 p-2"
+            className="w-full rounded border border-ink-500 p-2"
             placeholder="••••••••"
           />
         </div>
@@ -83,7 +83,7 @@ export default function UpdatePasswordPage() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
-            className={`w-full rounded border p-2 ${!passwordMatch && confirmPassword ? "border-ledger-500" : "border-ink-200"}`}
+            className={`w-full rounded border p-2 ${!passwordMatch && confirmPassword ? "border-ledger-500" : "border-ink-500"}`}
             placeholder="••••••••"
           />
           {!passwordMatch && confirmPassword && (

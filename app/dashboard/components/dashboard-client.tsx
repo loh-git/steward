@@ -108,6 +108,7 @@ export default function DashboardClient({
         const summary = summariseMonth(entry, getBaseNetMonthly(entry.year, entry.month));
         return {
           month: MONTH_NAMES[entry.month - 1].slice(0, 3),
+          label: `${MONTH_NAMES[entry.month - 1]} ${entry.year}`,
           income: Math.round(summary.totalIncome),
           outgoings: Math.round(summary.totalOutgoings),
           savings: Math.round(summary.totalSavings),

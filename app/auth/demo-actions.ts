@@ -29,7 +29,14 @@ export async function seedDemo(): Promise<DemoActionState> {
     }
   } catch (err) {
     console.error(err);
-    return { error: "We couldn't prepare the demo. Please try again." };
+    // In dev, show the real reason (the failing step and Supabase's message) instead of the generic one.
+    const reason = err instanceof Error ? err.message : String(err);
+    return {
+      error:
+        process.env.NODE_ENV === "production"
+          ? "We couldn't prepare the demo. Please try again."
+          : reason,
+    };
   }
 
   // A stale cookie from an earlier /setup save would otherwise be used as the persona's profile.

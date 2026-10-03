@@ -30,9 +30,10 @@ export default function TakeHomeCard({
     // room above the disclaimer instead of leaving an awkward gap mid-card —
     // the chart's own sizing is untouched either way.
     <div className="flex h-full flex-col rounded-lg border border-strongroom-500 bg-strongroom-900 p-6 text-white shadow-lg">
-      <div className="mb-5 flex items-start justify-between gap-3">
+      {/* Stacked on mobile so the title gets the full width instead of wrapping beside the badge. */}
+      <div className="mb-5 flex flex-col items-start gap-2 sm:flex-row sm:justify-between sm:gap-3">
         <div className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10">
+          <span className="hidden h-9 w-9 items-center justify-center rounded-full bg-white/10 sm:flex">
             <BriefcaseIcon className="text-white" />
           </span>
           <h2 className="font-display text-lg font-semibold">Take-home Pay</h2>

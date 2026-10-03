@@ -45,6 +45,11 @@ export async function signUp(
   });
 
   if (error) throw new Error(error.message);
+
+  // The root layout works out "is this a demo session?" on the server and isn't re-rendered on a
+  // client-side navigation by itself. Without this, someone who signs up while holding a leftover
+  // demo session keeps seeing the demo banner on their new real account.
+  revalidatePath("/", "layout");
 }
 
 export async function signOut() {

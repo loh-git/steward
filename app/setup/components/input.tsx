@@ -26,7 +26,7 @@ export default function Input({
   checked,
   onChange,
   placeholder,
-  className = "w-full rounded border border-ink-200 bg-paper-card p-2",
+  className = "w-full rounded border border-ink-500 bg-paper-card p-2",
   min,
   max,
   step,
